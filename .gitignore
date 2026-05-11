@@ -1,0 +1,29 @@
+# Environment & Secrets
+.env
+.env.local
+*.pem
+*.key
+
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Auth & Session Data
+whatsapp-auth.json
+*.session
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Runtime
+playwright_cache/
+.DS_Store
+
+# Docker
+*.pid
+
+# IDE
+.vscode/settings.json
+.idea/

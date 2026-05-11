@@ -1,0 +1,6 @@
+node_modules
+.env
+*.log
+whatsapp-auth.json
+playwright_cache
+.DS_Store
