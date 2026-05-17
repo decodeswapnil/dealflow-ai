@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS products (
     category TEXT,
     image_url TEXT,
     product_url TEXT,
+    affiliate_url TEXT,
     rating REAL,
     review_count INTEGER,
     first_seen TIMESTAMPTZ DEFAULT NOW(),
@@ -33,11 +34,13 @@ CREATE TABLE IF NOT EXISTS posted_deals (
     post_template TEXT,
     channel TEXT DEFAULT 'telegram',
     engagement_views INTEGER DEFAULT 0,
-    engagement_clicks INTEGER DEFAULT 0
+    engagement_clicks INTEGER DEFAULT 0,
+    message_id BIGINT
 );
 
 SELECT create_hypertable('posted_deals', 'time', if_not_exists => TRUE);
 CREATE INDEX IF NOT EXISTS idx_posted_deals_asin ON posted_deals(asin, time DESC);
+CREATE INDEX IF NOT EXISTS idx_posted_deals_message_id ON posted_deals(message_id) WHERE message_id IS NOT NULL;
 
 -- WhatsApp ingestion log
 CREATE TABLE IF NOT EXISTS whatsapp_ingestion (
@@ -77,3 +80,15 @@ CREATE TABLE IF NOT EXISTS agent_metrics (
 );
 
 SELECT create_hypertable('agent_metrics', 'time', if_not_exists => TRUE);
+
+-- Posted digests (organized deal summaries)
+CREATE TABLE IF NOT EXISTS posted_digests (
+    time TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    type TEXT NOT NULL,
+    deal_count INTEGER NOT NULL,
+    categories TEXT[],
+    message_id BIGINT
+);
+
+SELECT create_hypertable('posted_digests', 'time', if_not_exists => TRUE);
+CREATE INDEX IF NOT EXISTS idx_posted_digests_time ON posted_digests(time DESC);

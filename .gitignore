@@ -1,29 +1,38 @@
-# Environment & Secrets
+# Environment variables
 .env
 .env.local
-*.pem
-*.key
+.env.*.local
 
-# Dependencies
+# Node.js
 node_modules/
-*/node_modules/
-
-# Auth & Session Data
-whatsapp-auth.json
-*.session
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Logs
 logs/
 *.log
-npm-debug.log*
 
-# Runtime
-playwright_cache/
+# WhatsApp auth
+whatsapp-auth.json
+
+# Playwright
+playwright-report/
+test-results/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
 .DS_Store
+Thumbs.db
 
 # Docker
 *.pid
 
-# IDE
-.vscode/settings.json
-.idea/
+# Scratch / throwaway dev files (not part of the project)
+scratch/
+fix_escape.py
+_select_all_contacts.py
+shared/temp_migrate.js

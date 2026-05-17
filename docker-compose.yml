@@ -13,7 +13,7 @@ services:
     ports:
       - "${DB_PORT:-5432}:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U affiliate"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-affiliate}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -21,7 +21,7 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy noeviction
     volumes:
       - redis_data:/data
     ports:
@@ -35,10 +35,10 @@ services:
   # ── Shared Module ──────────────────────────────────────
   shared:
     build:
-      context: ./shared
-      dockerfile: ../infrastructure/docker/shared.Dockerfile
+      context: .
+      dockerfile: infrastructure/docker/shared.Dockerfile
     volumes:
-      - ./shared:/app
+      - ./shared:/app/shared
       - shared_modules:/app/node_modules
     command: echo "Shared module built"
 
@@ -53,23 +53,30 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - DB_HOST=postgres
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-affiliate_platform}
+      - DB_USER=${DB_USER:-affiliate_user}
+      - DB_PASSWORD=${DB_PASSWORD}
       - REDIS_HOST=redis
+      - REDIS_URL=redis://redis:6379
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - AMAZON_ASSOCIATE_TAG=${AMAZON_ASSOCIATE_TAG}
       - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
+      - TESTING_MODE=${TESTING_MODE:-false}
+      - RAM_MANAGEMENT_ENABLED=${RAM_MANAGEMENT_ENABLED:-true}
+      - BYPASS_RAM_MANAGEMENT_AND_USE_LOCAL_MODEL=${BYPASS_RAM_MANAGEMENT_AND_USE_LOCAL_MODEL:-true}
+      - BYPASS_RAM_MANAGEMENT_AND_USE_LOCAL_MODEL=${BYPASS_RAM_MANAGEMENT_AND_USE_LOCAL_MODEL:-true}
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     volumes:
-      - ./agents/deal-discovery:/app/agents/deal-discovery
-      - ./shared:/app/shared
-      - shared_modules:/app/node_modules
       - playwright_cache:/root/.cache/ms-playwright
     deploy:
       resources:
         limits:
-          memory: 2G
+          memory: ${DOCKER_MEM_DISCOVERY:-1.5G}
 
   deal-analysis:
     build:
@@ -81,22 +88,32 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - DB_HOST=postgres
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-affiliate_platform}
+      - DB_USER=${DB_USER:-affiliate_user}
+      - DB_PASSWORD=${DB_PASSWORD}
       - REDIS_HOST=redis
+      - REDIS_URL=redis://redis:6379
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.0-flash}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-openai/gpt-4o-mini}
+      - REPLICATE_API_KEY=${REPLICATE_API_KEY}
+      - REPLICATE_MODEL=${REPLICATE_MODEL:-meta/meta-llama-3-8b-instruct}
+      - AMAZON_ASSOCIATE_TAG=${AMAZON_ASSOCIATE_TAG}
       - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
+      - TESTING_MODE=${TESTING_MODE:-false}
+      - RAM_MANAGEMENT_ENABLED=${RAM_MANAGEMENT_ENABLED:-true}
+      - BYPASS_RAM_MANAGEMENT_AND_USE_LOCAL_MODEL=${BYPASS_RAM_MANAGEMENT_AND_USE_LOCAL_MODEL:-true}
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
-    volumes:
-      - ./agents/deal-analysis:/app/agents/deal-analysis
-      - ./shared:/app/shared
-      - shared_modules:/app/node_modules
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: ${DOCKER_MEM_ANALYSIS:-250M}
 
   telegram-posting:
     build:
@@ -108,19 +125,83 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - DB_HOST=postgres
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-affiliate_platform}
+      - DB_USER=${DB_USER:-affiliate_user}
+      - DB_PASSWORD=${DB_PASSWORD}
       - REDIS_HOST=redis
+      - REDIS_URL=redis://redis:6379
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - TELEGRAM_CHANNEL_ID=${TELEGRAM_CHANNEL_ID}
       - AMAZON_ASSOCIATE_TAG=${AMAZON_ASSOCIATE_TAG}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.0-flash}
+      - GEMINI_FALLBACK_KEY=${GEMINI_FALLBACK_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-openai/gpt-4o-mini}
+      - REPLICATE_API_KEY=${REPLICATE_API_KEY}
+      - REPLICATE_MODEL=${REPLICATE_MODEL:-meta/meta-llama-3-8b-instruct}
+      - SARVAM_API_KEY=${SARVAM_API_KEY}
+      - AI_CAPTION_ENABLED=${AI_CAPTION_ENABLED:-true}
+      - REVENUE_SCORING_WEIGHT=${REVENUE_SCORING_WEIGHT:-0.12}
+      - CONTENT_CALENDAR_ENABLED=${CONTENT_CALENDAR_ENABLED:-true}
+      - AB_TESTING_ENABLED=${AB_TESTING_ENABLED:-true}
+      - CAPTION_VARIANTS_ENABLED=${CAPTION_VARIANTS_ENABLED:-true}
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
+      - TESTING_MODE=${TESTING_MODE:-false}
+      - RAM_MANAGEMENT_ENABLED=${RAM_MANAGEMENT_ENABLED:-true}
+      - BYPASS_RAM_MANAGEMENT_AND_USE_LOCAL_MODEL=${BYPASS_RAM_MANAGEMENT_AND_USE_LOCAL_MODEL:-true}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: ${DOCKER_MEM_TELEGRAM:-1.5G}
+
+  curated-lists:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/agents/base.Dockerfile
+      args:
+        AGENT_DIR: agents/curated-lists
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - DB_HOST=postgres
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-affiliate_platform}
+      - DB_USER=${DB_USER:-affiliate_user}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_URL=redis://redis:6379
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHANNEL_ID=${TELEGRAM_CHANNEL_ID}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_FALLBACK_KEY=${GEMINI_FALLBACK_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.0-flash}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-openai/gpt-4o-mini}
+      - REPLICATE_API_KEY=${REPLICATE_API_KEY}
+      - REPLICATE_MODEL=${REPLICATE_MODEL:-meta/meta-llama-3-8b-instruct}
+      - AMAZON_ASSOCIATE_TAG=${AMAZON_ASSOCIATE_TAG}
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
+      - TESTING_MODE=${TESTING_MODE:-false}
+      - RAM_MANAGEMENT_ENABLED=${RAM_MANAGEMENT_ENABLED:-true}
+      - BYPASS_RAM_MANAGEMENT_AND_USE_LOCAL_MODEL=${BYPASS_RAM_MANAGEMENT_AND_USE_LOCAL_MODEL:-true}
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     volumes:
-      - ./agents/telegram-posting:/app/agents/telegram-posting
-      - ./shared:/app/shared
-      - shared_modules:/app/node_modules
+      - playwright_cache:/root/.cache/ms-playwright
+    deploy:
+      resources:
+        limits:
+          memory: ${DOCKER_MEM_CURATED_LISTS:-1.5G}
 
   whatsapp-ingestion:
     build:
@@ -148,12 +229,15 @@ services:
 
   # ── Monitoring ─────────────────────────────────────────
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:10.4.3
     restart: unless-stopped
     ports:
       - "${GRAFANA_PORT:-3000}:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
     volumes:
       - grafana_data:/var/lib/grafana
       - ./infrastructure/grafana/dashboards:/etc/grafana/provisioning/dashboards
