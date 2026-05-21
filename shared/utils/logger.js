@@ -1,7 +1,12 @@
 import winston from 'winston';
 import path from 'path';
+import fs from 'fs';
 
 const { combine, timestamp, json, errors } = winston.format;
+
+// Ensure logs directory exists (needed in Docker containers)
+const logsDir = path.join(process.cwd(), 'logs');
+try { fs.mkdirSync(logsDir, { recursive: true }); } catch (e) { /* ignore */ }
 
 export function createLogger(agentName) {
   return winston.createLogger({

@@ -6,24 +6,32 @@ export const DealSchema = z.object({
   category: z.string().optional(),
   imageUrl: z.string().url().optional(),
   productUrl: z.string().url(),
+  affiliateUrl: z.string().url().optional(),
   rating: z.number().min(0).max(5).optional(),
   reviewCount: z.number().int().min(0).optional(),
   price: z.number().positive(),
   mrp: z.number().positive().optional(),
   source: z.enum(['amazon', 'whatsapp', 'api']).default('amazon'),
   discoveredAt: z.date().default(() => new Date()),
+  bankOffers: z.string().optional(),
 });
 
 export const DealScoreSchema = z.object({
   asin: z.string(),
   score: z.number().min(0).max(10),
   factors: z.object({
-    discountWeight: z.number(),
-    historicalWeight: z.number(),
-    ratingWeight: z.number(),
-    socialWeight: z.number(),
+    discountWeight: z.number().default(0),
+    historicalWeight: z.number().default(0),
+    ratingWeight: z.number().default(0),
+    socialWeight: z.number().default(0),
   }),
   verdict: z.enum(['hot', 'good', 'average', 'skip']),
+  metadata: z.object({
+    fakeDiscountDetected: z.boolean().optional(),
+    fakeDiscountConfidence: z.number().optional(),
+    priceTrend: z.string().optional(),
+    realDiscount: z.number().optional(),
+  }).optional(),
 });
 
 export const PostSchema = z.object({

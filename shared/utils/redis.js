@@ -1,10 +1,13 @@
 import Redis from 'ioredis';
-import { Queue } from 'bullmq';
+import { Queue, Worker } from 'bullmq';
 import { createLogger } from './logger.js';
 
 const logger = createLogger('redis');
 
-export const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+const redisUrl = process.env.REDIS_URL || 
+  (process.env.REDIS_HOST ? `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT || 6379}` : 'redis://localhost:6379');
+
+export const redis = new Redis(redisUrl, {
   maxRetriesPerRequest: null, // BullMQ requires null for proper retry handling
   enableReadyCheck: false,    // BullMQ requires false to avoid blocking commands
 });
@@ -24,6 +27,14 @@ export function createQueue(name) {
         delay: 2000,
       },
     },
+  });
+}
+
+export function createWorker(queueName, processor, options = {}) {
+  return new Worker(queueName, processor, {
+    connection: redis.options,
+    concurrency: options.concurrency || 1,
+    ...options,
   });
 }
 
