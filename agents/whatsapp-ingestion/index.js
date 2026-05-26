@@ -12,12 +12,12 @@ class WhatsAppIngestionAgent {
   constructor() {
     this.browser = null;
     this.isRunning = false;
-    this.groupUrls = (process.env.WHATSAPP_GROUP_NAMES || '').split(',').filter(Boolean);
+    this.groupNames = (process.env.WHATSAPP_GROUP_NAMES || '').split(',').filter(Boolean);
   }
 
   async init() {
     logger.info('Initializing WhatsApp Ingestion Agent');
-    if (this.groupUrls.length === 0) {
+    if (this.groupNames.length === 0) {
       logger.warn('No WhatsApp groups configured');
       return;
     }
@@ -46,11 +46,11 @@ class WhatsAppIngestionAgent {
       // Wait for chat list (means logged in)
       await page.waitForSelector('[data-testid="chat-list"]', { timeout: 30000 });
       
-      for (const groupUrl of this.groupUrls) {
+      for (const groupName of this.groupNames) {
         try {
-          await this.processGroup(page, groupUrl);
+          await this.processGroup(page, groupName);
         } catch (err) {
-          logger.error(`Failed to process ${groupUrl}`, { error: err.message });
+          logger.error(`Failed to process group: ${groupName}`, { error: err.message });
         }
       }
 
@@ -63,9 +63,21 @@ class WhatsAppIngestionAgent {
     }
   }
 
-  async processGroup(page, groupUrl) {
-    // Navigate to group
-    await page.goto(groupUrl);
+  async processGroup(page, groupName) {
+    // Search for the group by name (since we have names, not URLs)
+    const searchSelector = '[data-testid="chat-list-search"], [title="Search input textbox"]';
+    await page.waitForSelector(searchSelector, { timeout: 10000 });
+    await page.click(searchSelector);
+    await page.fill(searchSelector, groupName);
+    await page.waitForTimeout(2000);
+    
+    // Click the first matching group result
+    const groupResult = await page.$(`span[title="${groupName}"]`);
+    if (!groupResult) {
+      logger.warn(`Group "${groupName}" not found in WhatsApp`);
+      return;
+    }
+    await groupResult.click();
     await page.waitForSelector('[data-testid="conversation-panel-messages"]', { timeout: 10000 });
 
     // Get messages
@@ -99,7 +111,7 @@ class WhatsAppIngestionAgent {
       // Log ingestion
       await query(
         'INSERT INTO whatsapp_ingestion (time, source_group, raw_text, extracted_asin, extracted_url, processed) VALUES (NOW(), $1, $2, $3, $4, TRUE)',
-        [groupUrl, msg.text, asin, `https://www.amazon.in/dp/${asin}`]
+        [groupName, msg.text, asin, `https://www.amazon.in/dp/${asin}`]
       );
 
       // Queue for analysis
@@ -130,6 +142,7 @@ class WhatsAppIngestionAgent {
 
 const agent = new WhatsAppIngestionAgent();
 process.on('SIGINT', () => agent.shutdown().then(() => process.exit(0)));
+process.on('SIGTERM', () => agent.shutdown().then(() => process.exit(0)));
 agent.init().catch(err => {
   logger.error('Failed to start', err);
   process.exit(1);

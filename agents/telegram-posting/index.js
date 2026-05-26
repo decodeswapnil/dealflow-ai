@@ -807,8 +807,8 @@ class TelegramPostingAgent {
     // Register private-chat bot handlers
     this.registerBotHandlers();
 
-    // Start worker to process deals from analysis agent (posts queue)
-    this.startPostsWorker();
+    // Worker disabled in favor of burst scheduler (1-2 posts, 10-12 min gap)
+    // this.startPostsWorker();
 
     // Start worker to process published deals
     this.startPublishedDealsWorker();
@@ -969,7 +969,7 @@ class TelegramPostingAgent {
       if (!results.rows.length) {
         await bot.sendMessage(chatId,
           `😕 Abhi database mein "<b>${keywords}</b>" ke deals nahi hain.\n\n` +
-          `Channel pe daily fresh deals aate hain — <b>@dealdecodeindia</b> follow karo! 🔥`,
+          `Channel pe daily fresh deals aate hain — <b>${CHANNEL_ID}</b> follow karo! 🔥`,
           { parse_mode: 'HTML' }
         );
         return;
@@ -1526,6 +1526,7 @@ class TelegramPostingAgent {
            ORDER BY time DESC LIMIT 1
          ) ph ON true
          WHERE p.affiliate_url IS NOT NULL
+         AND p.verdict IN ('hot', 'good')
          AND p.last_updated > NOW() - INTERVAL '48 hours'
          AND NOT EXISTS (
            SELECT 1 FROM posted_deals pd 
@@ -1549,6 +1550,7 @@ class TelegramPostingAgent {
         affiliateUrl: row.affiliate_url,
         category: row.category,
         bankOffers: row.bank_offers,
+        verdict: row.verdict,
       }));
     } catch (err) {
       logger.error('Failed to get approved deals', { error: err.message });
