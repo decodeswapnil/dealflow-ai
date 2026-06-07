@@ -1,0 +1,16 @@
+{
+  "name": "architecture-report-generator",
+  "version": "1.0.0",
+  "description": "PDF generator for architecture report",
+  "type": "module",
+  "scripts": {
+    "generate": "node generate-pdf.js",
+    "install-chrome": "node node_modules/puppeteer/install.mjs"
+  },
+  "dependencies": {
+    "@mermaid-js/mermaid-cli": "^11.14.0",
+    "marked": "^12.0.0",
+    "puppeteer": "^22.0.0",
+    "svgexport": "^0.4.2"
+  }
+}

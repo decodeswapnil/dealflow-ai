@@ -1,0 +1,37 @@
+graph TB
+    subgraph "Kubernetes Cluster"
+        subgraph "Data Tier"
+            PG[(PostgreSQL HA)]
+            RD[(Redis Cluster)]
+        end
+
+        subgraph "Agent Pools"
+            AP1[Discovery Pool<br/>3 replicas]
+            AP2[Analysis Pool<br/>5 replicas]
+            AP3[Posting Pool<br/>2 replicas]
+        end
+
+        subgraph "Load Balancing"
+            LB1[Queue Router]
+            LB2[API Gateway]
+        end
+
+        subgraph "Monitoring"
+            PR[Prometheus Federation]
+            GF[Grafana HA]
+        end
+
+        LB1 --> AP1
+        LB1 --> AP2
+        LB1 --> AP3
+        AP1 --> PG
+        AP2 --> PG
+        AP3 --> PG
+        AP1 --> RD
+        AP2 --> RD
+        AP3 --> RD
+        AP1 --> PR
+        AP2 --> PR
+        AP3 --> PR
+        PR --> GF
+    end

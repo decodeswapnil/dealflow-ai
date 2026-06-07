@@ -1,0 +1,58 @@
+graph TB
+    subgraph "External Sources"
+        AMZ[Amazon India]
+        WA[WhatsApp Groups]
+        AF[Affiliate Feeds]
+    end
+
+    subgraph "Ingestion Layer"
+        DD[Deal Discovery Agent]
+        WI[WhatsApp Ingestion Agent]
+        MSI[Multi-Source Ingestion]
+    end
+
+    subgraph "Orchestration Layer"
+        RQ[Redis Queue<br/>BullMQ]
+        RS[Redis Streams]
+    end
+
+    subgraph "Processing Layer"
+        DA[Deal Analysis Agent<br/>AI Scoring]
+        CL[Curated Lists Agent<br/>Theme Generation]
+    end
+
+    subgraph "Distribution Layer"
+        TP[Telegram Posting Agent]
+        CC[Content Calendar]
+        AB[A/B Testing Engine]
+    end
+
+    subgraph "Data Layer"
+        PG[(PostgreSQL<br/>+ pgvector)]
+        RD[(Redis Cache)]
+    end
+
+    subgraph "Monitoring Layer"
+        PR[Prometheus]
+        GF[Grafana]
+    end
+
+    AMZ --> DD
+    WA --> WI
+    AF --> MSI
+    DD --> RQ
+    WI --> RQ
+    MSI --> RQ
+    RQ --> DA
+    RQ --> CL
+    DA --> RQ
+    CL --> TP
+    RQ --> TP
+    TP --> PG
+    DA --> PG
+    DD --> PG
+    PG --> RD
+    TP --> PR
+    DA --> PR
+    DD --> PR
+    PR --> GF

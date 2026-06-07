@@ -1,0 +1,40 @@
+sequenceDiagram
+    participant AMZ as Amazon India
+    participant DD as Deal Discovery
+    participant RQ as Redis Queue
+    participant DA as Deal Analysis
+    participant PG as PostgreSQL
+    participant TP as Telegram Posting
+    participant TG as Telegram Channel
+
+    rect rgb(225, 245, 254)
+        Note over AMZ,DD: Discovery Phase
+        DD->>AMZ: Navigate to deals page
+        AMZ-->>DD: HTML content
+        DD->>DD: Extract deal data
+        DD->>DD: Apply stealth fingerprinting
+        DD->>PG: Store raw deal
+        DD->>RQ: Publish to 'deals' queue
+    end
+
+    rect rgb(232, 245, 233)
+        Note over RQ,DA: Analysis Phase
+        RQ->>DA: Consume deal message
+        DA->>PG: Fetch price history
+        PG-->>DA: Historical prices
+        DA->>DA: Calculate base score
+        DA->>DA: Call AI model
+        DA->>PG: Store analysis result
+        DA->>RQ: Publish to 'posts' queue
+    end
+
+    rect rgb(255, 243, 224)
+        Note over TP,TG: Distribution Phase
+        RQ->>TP: Consume scored deal
+        TP->>PG: Fetch engagement data
+        TP->>TP: Generate caption
+        TP->>TP: Extract image
+        TP->>TG: Post message
+        TG-->>TP: Message ID
+        TP->>PG: Store post metadata
+    end

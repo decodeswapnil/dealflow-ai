@@ -1,0 +1,48 @@
+graph TD
+    subgraph "Data Services"
+        PG[(PostgreSQL)]
+        RD[(Redis)]
+    end
+
+    subgraph "Core Agents"
+        DD[Deal Discovery]
+        DA[Deal Analysis]
+        TP[Telegram Posting]
+        CL[Curated Lists]
+    end
+
+    subgraph "Optional Agents"
+        WI[WhatsApp Ingestion]
+    end
+
+    subgraph "Monitoring"
+        PR[Prometheus]
+        GF[Grafana]
+    end
+
+    subgraph "Shared"
+        SH[Shared Module]
+    end
+
+    PG --> DD
+    PG --> DA
+    PG --> TP
+    PG --> CL
+    PG --> WI
+    RD --> DD
+    RD --> DA
+    RD --> TP
+    RD --> CL
+    RD --> WI
+    SH --> DD
+    SH --> DA
+    SH --> TP
+    SH --> CL
+    SH --> WI
+    DD --> PR
+    DA --> PR
+    TP --> PR
+    CL --> PR
+    PR --> GF
+    WI -.->|Manual Start| RD
+    WI -.->|Manual Start| PG

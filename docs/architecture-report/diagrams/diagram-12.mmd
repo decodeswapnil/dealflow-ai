@@ -1,0 +1,44 @@
+graph TB
+    subgraph "Docker Network: affiliate-platform_default"
+        subgraph "Data Layer"
+            PG[(PostgreSQL<br/>ankane/pgvector)]
+            RD[(Redis<br/>redis:7-alpine)]
+        end
+
+        subgraph "Application Layer"
+            DD[Deal Discovery<br/>Node.js 20]
+            DA[Deal Analysis<br/>Node.js 20]
+            TP[Telegram Posting<br/>Node.js 20]
+            CL[Curated Lists<br/>Node.js 20]
+            WI[WhatsApp Ingestion<br/>Node.js 20]
+        end
+
+        subgraph "Monitoring Layer"
+            PR[Prometheus<br/>prom/prometheus]
+            GF[Grafana<br/>grafana:10.4.3]
+        end
+
+        subgraph "Shared Resources"
+            SH[Shared Module<br/>Volume]
+            PC[Playwright Cache<br/>Volume]
+        end
+    end
+
+    PG --> DD
+    PG --> DA
+    PG --> TP
+    PG --> CL
+    RD --> DD
+    RD --> DA
+    RD --> TP
+    RD --> CL
+    SH --> DD
+    SH --> DA
+    SH --> TP
+    SH --> CL
+    PC --> DD
+    PC --> CL
+    DD --> PR
+    DA --> PR
+    TP --> PR
+    PR --> GF

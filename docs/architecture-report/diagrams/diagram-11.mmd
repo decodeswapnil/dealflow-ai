@@ -1,0 +1,96 @@
+erDiagram
+    PRODUCTS {
+        string asin PK
+        string title
+        string category
+        string image_url
+        string product_url
+        string affiliate_url
+        float rating
+        int review_count
+        timestamp first_seen
+        timestamp last_updated
+    }
+
+    PRICE_HISTORY {
+        timestamp time PK
+        string asin PK
+        float price
+        float mrp
+        float discount_pct
+        string source
+    }
+
+    POSTED_DEALS {
+        timestamp time PK
+        string asin PK
+        float deal_score
+        string post_template
+        string channel
+        int engagement_views
+        int engagement_clicks
+        bigint message_id
+        string content_strategy
+        string archetype
+        boolean ai_generated
+        string posting_slot
+        float revenue_multiplier
+        int clicks
+        float estimated_revenue
+        timestamp last_click_at
+        float final_price
+        float deal_price
+        string category
+        string caption_source
+    }
+
+    WHATSAPP_INGESTION {
+        timestamp time PK
+        string message_id
+        string source_group
+        text raw_text
+        string extracted_asin
+        string extracted_url
+        boolean processed
+        string duplicate_of
+    }
+
+    AFFILIATE_CLICKS {
+        timestamp time PK
+        string short_url
+        string original_url
+        string asin
+        string channel
+        string user_agent
+        string ip_hash
+    }
+
+    AGENT_METRICS {
+        timestamp time PK
+        string agent_name
+        string task_type
+        string status
+        int duration_ms
+        string error_message
+    }
+
+    AB_TEST_ASSIGNMENTS {
+        string test_id PK
+        string deal_asin
+        string variant
+        timestamp assigned_at
+        bigint message_id
+    }
+
+    ENGAGEMENT_POSTS {
+        timestamp time PK
+        string post_type
+        int view_count
+        int click_count
+        float engagement_rate
+    }
+
+    PRODUCTS ||--o{ PRICE_HISTORY : "has prices"
+    PRODUCTS ||--o{ POSTED_DEALS : "posted as"
+    POSTED_DEALS ||--o{ AFFILIATE_CLICKS : "generates"
+    PRODUCTS ||--o{ WHATSAPP_INGESTION : "discovered via"

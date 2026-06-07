@@ -1,0 +1,10 @@
+flowchart TD
+    Start([Scheduled Trigger]) --> Fetch[Fetch Recent Deals]
+    Fetch --> Theme[AI Theme Generation]
+    Theme --> Select[Select Top Deals]
+    Select --> Generate[Generate List Content]
+    Generate --> Image[Create Collage Image]
+    Image --> Schedule[Schedule Post]
+    Schedule --> End([End])
+
+    style Start fill:#e1f5fe

@@ -1,0 +1,38 @@
+graph LR
+    subgraph "Agents"
+        DD[Deal Discovery]
+        DA[Deal Analysis]
+        TP[Telegram Posting]
+        CL[Curated Lists]
+    end
+
+    subgraph "Metrics Endpoints"
+        M1[Port 3001]
+        M2[Port 3002]
+        M3[Port 3004]
+        M4[Port 3005]
+    end
+
+    subgraph "Prometheus"
+        PR[Scraper]
+        TS[Time Series DB]
+    end
+
+    subgraph "Grafana"
+        DB1[Deal Discovery Dashboard]
+        DB2[Deal Analysis Dashboard]
+        DB3[Telegram Posting Dashboard]
+    end
+
+    DD --> M1
+    DA --> M2
+    TP --> M3
+    CL --> M4
+    M1 --> PR
+    M2 --> PR
+    M3 --> PR
+    M4 --> PR
+    PR --> TS
+    TS --> DB1
+    TS --> DB2
+    TS --> DB3

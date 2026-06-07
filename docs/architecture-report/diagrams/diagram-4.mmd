@@ -1,0 +1,23 @@
+flowchart TD
+    Start([Queue Worker<br/>BullMQ]) --> Receive[Receive Deal]
+    Receive --> Fetch[Fetch Price History]
+    Fetch --> Score[Calculate Base Score]
+    Score --> AI{AI Enhancement}
+    AI -->|Gemini| Gemini[Google Gemini Pro]
+    AI -->|OpenRouter| OR[OpenRouter GPT-4o]
+    AI -->|Fallback| Ollama[Local Ollama]
+    Gemini --> Validate{Valid Response?}
+    OR --> Validate
+    Ollama --> Validate
+    Validate -->|Yes| Combine[Combine Scores]
+    Validate -->|No| Fallback[Use Base Score]
+    Combine --> Threshold{Score > Threshold?}
+    Fallback --> Threshold
+    Threshold -->|Yes| PostQueue[Add to Posts Queue]
+    Threshold -->|No| Reject[Reject Deal]
+    PostQueue --> End([End])
+    Reject --> End
+
+    style Start fill:#e1f5fe
+    style PostQueue fill:#c8e6c9
+    style Reject fill:#ffcdd2

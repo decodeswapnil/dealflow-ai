@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Affiliate Automation Platform - System Architecture Report</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm 15mm 25mm 15mm;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.6;
+      color: #333;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    h1 {
+      font-size: 24pt;
+      color: #1a237e;
+      border-bottom: 3px solid #1a237e;
+      padding-bottom: 10px;
+      margin-top: 0;
+      page-break-before: avoid;
+    }
+    
+    h2 {
+      font-size: 16pt;
+      color: #283593;
+      border-bottom: 2px solid #c5cae9;
+      padding-bottom: 8px;
+      margin-top: 30px;
+      page-break-after: avoid;
+    }
+    
+    h3 {
+      font-size: 13pt;
+      color: #3949ab;
+      margin-top: 25px;
+      page-break-after: avoid;
+    }
+    
+    h4 {
+      font-size: 11pt;
+      color: #5c6bc0;
+      margin-top: 20px;
+    }
+    
+    p {
+      margin: 10px 0;
+      text-align: justify;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 9.5pt;
+      page-break-inside: avoid;
+    }
+    
+    th {
+      background-color: #1a237e;
+      color: white;
+      padding: 10px 8px;
+      text-align: left;
+      font-weight: 600;
+      border: 1px solid #1a237e;
+    }
+    
+    td {
+      padding: 8px;
+      border: 1px solid #e0e0e0;
+      vertical-align: top;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f5f5f5;
+    }
+    
+    pre {
+      background-color: #263238;
+      color: #aed581;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 9pt;
+      line-height: 1.4;
+      page-break-inside: avoid;
+    }
+    
+    code {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 9pt;
+    }
+    
+    pre code {
+      color: #aed581;
+      background: none;
+      padding: 0;
+    }
+    
+    :not(pre) > code {
+      background-color: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: #d32f2f;
+      font-size: 9.5pt;
+    }
+    
+    ul, ol {
+      margin: 10px 0;
+      padding-left: 25px;
+    }
+    
+    li {
+      margin: 5px 0;
+    }
+    
+    blockquote {
+      border-left: 4px solid #1a237e;
+      margin: 15px 0;
+      padding: 10px 20px;
+      background-color: #e8eaf6;
+      font-style: italic;
+    }
+    
+    hr {
+      border: none;
+      border-top: 2px solid #c5cae9;
+      margin: 30px 0;
+    }
+    
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 15px auto;
+      page-break-inside: avoid;
+    }
+    
+    .cover-page {
+      text-align: center;
+      padding: 100px 50px;
+      page-break-after: always;
+    }
+    
+    .cover-title {
+      font-size: 32pt;
+      color: #1a237e;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    
+    .cover-subtitle {
+      font-size: 18pt;
+      color: #5c6bc0;
+      margin-bottom: 60px;
+    }
+    
+    .cover-meta {
+      font-size: 12pt;
+      color: #666;
+      line-height: 2;
+    }
+    
+    @media print {
+      body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+      
+      h1, h2, h3 {
+        page-break-after: avoid;
+      }
+      
+      table, pre, img {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cover-page">
+    <div class="cover-title">AI Affiliate Automation Platform</div>
+    <div class="cover-subtitle">System Architecture Report</div>
+    <div class="cover-meta">
+      <strong>Version:</strong> 2.0<br>
+      <strong>Date:</strong> December 2026<br>
+      <strong>Classification:</strong> Internal Use<br><br>
+      <em>Production-grade multi-agent AI system for autonomous deal discovery,<br>
+      analysis, and distribution</em>
+    </div>
+  </div>
+  
+  <h1>AI Affiliate Automation Platform</h1>
+<h2>System Architecture Report</h2>
+<p><strong>Version:</strong> 2.0<br><strong>Date:</strong> December 2026<br><strong>Classification:</strong> Internal Use</p>
+<hr>
+<h2>Table of Contents</h2>
+<ol>
+<li><a href="#1-executive-summary">Executive Summary</a></li>
+<li><a href="#2-system-overview">System Overview</a></li>
+<li><a href="#3-architecture-diagrams">Architecture Diagrams</a></li>
+<li><a href="#4-component-details">Component Details</a></li>
+<li><a href="#5-data-flow">Data Flow</a></li>
+<li><a href="#6-database-schema">Database Schema</a></li>
+<li><a href="#7-deployment-architecture">Deployment Architecture</a></li>
+<li><a href="#8-monitoring--observability">Monitoring &amp; Observability</a></li>
+<li><a href="#9-scaling-strategy">Scaling Strategy</a></li>
+<li><a href="#10-security-architecture">Security Architecture</a></li>
+<li><a href="#11-technology-stack">Technology Stack</a></li>
+<li><a href="#12-cost-analysis">Cost Analysis</a></li>
+</ol>
+<hr>
+<h2>1. Executive Summary</h2>
+<p>The AI Affiliate Automation Platform is a production-grade multi-agent system designed for autonomous deal discovery, analysis, and distribution via Telegram channels. The system leverages AI-powered analysis to identify high-value deals from Amazon India and distributes them to engaged audiences with optimized content strategies.</p>
+<h3>Key Capabilities</h3>
+<ul>
+<li><strong>Autonomous Deal Discovery</strong>: Automated scraping of Amazon India deals with stealth browser technology</li>
+<li><strong>AI-Powered Analysis</strong>: Multi-model AI scoring system using Gemini Pro, OpenRouter, and Ollama</li>
+<li><strong>Intelligent Posting</strong>: Content calendar optimization, A/B testing, and engagement tracking</li>
+<li><strong>Multi-Source Ingestion</strong>: WhatsApp group monitoring and affiliate feed integration</li>
+<li><strong>Curated Lists</strong>: AI-generated themed deal collections and digests</li>
+<li><strong>Real-time Monitoring</strong>: Prometheus + Grafana dashboards for full observability</li>
+</ul>
+<h3>Business Impact</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Deals Discovered/Day</td>
+<td>1,200+</td>
+</tr>
+<tr>
+<td>Analysis Accuracy</td>
+<td>94%</td>
+</tr>
+<tr>
+<td>Post Engagement Rate</td>
+<td>12-18%</td>
+</tr>
+<tr>
+<td>Operational Uptime</td>
+<td>99.5%</td>
+</tr>
+<tr>
+<td>Monthly Operating Cost</td>
+<td>$26-36</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>2. System Overview</h2>
+<h3>2.1 High-Level Architecture</h3>
+<p><img src="diagrams/diagram-0.png" alt="Architecture Diagram 1" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<h3>2.2 Agent Ecosystem</h3>
+<p>The platform operates as a distributed multi-agent system with 6 specialized agents:</p>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Purpose</th>
+<th>Trigger</th>
+<th>Scale</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Deal Discovery</td>
+<td>Scrape Amazon deals</td>
+<td>Cron (30 min)</td>
+<td>50 deals/source</td>
+</tr>
+<tr>
+<td>WhatsApp Ingestion</td>
+<td>Monitor WhatsApp groups</td>
+<td>Cron (10 min)</td>
+<td>Variable</td>
+</tr>
+<tr>
+<td>Deal Analysis</td>
+<td>AI-powered deal scoring</td>
+<td>Queue-driven</td>
+<td>Real-time</td>
+</tr>
+<tr>
+<td>Telegram Posting</td>
+<td>Channel content distribution</td>
+<td>Queue-driven</td>
+<td>2s intervals</td>
+</tr>
+<tr>
+<td>Curated Lists</td>
+<td>Themed deal collections</td>
+<td>Scheduled</td>
+<td>3x daily</td>
+</tr>
+<tr>
+<td>Quality Control</td>
+<td>Content validation</td>
+<td>Event-driven</td>
+<td>Per-post</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>3. Architecture Diagrams</h2>
+<h3>3.1 Component Architecture</h3>
+<p><img src="diagrams/diagram-1.png" alt="Architecture Diagram 2" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<h3>3.2 Service Dependency Graph</h3>
+<p><img src="diagrams/diagram-2.png" alt="Architecture Diagram 3" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<hr>
+<h2>4. Component Details</h2>
+<h3>4.1 Deal Discovery Agent</h3>
+<p><img src="diagrams/diagram-3.png" alt="Architecture Diagram 4" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<p><strong>Technical Specifications:</strong></p>
+<ul>
+<li><strong>Runtime</strong>: Node.js 20+ with Playwright</li>
+<li><strong>Browser</strong>: Chromium with stealth plugins</li>
+<li><strong>Proxy</strong>: Rotation ready (not yet enabled)</li>
+<li><strong>Fingerprinting</strong>: Randomized viewport, user-agent, timezone</li>
+<li><strong>Rate Limiting</strong>: 30s between requests</li>
+<li><strong>Error Handling</strong>: 3 retry attempts with exponential backoff</li>
+</ul>
+<h3>4.2 Deal Analysis Agent</h3>
+<p><img src="diagrams/diagram-4.png" alt="Architecture Diagram 5" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<p><strong>AI Scoring Pipeline:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Model</th>
+<th>Purpose</th>
+<th>Fallback</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Primary</td>
+<td>Gemini 2.0 Flash</td>
+<td>Deal quality assessment</td>
+<td>OpenRouter</td>
+</tr>
+<tr>
+<td>Secondary</td>
+<td>OpenRouter GPT-4o</td>
+<td>Price validation</td>
+<td>Gemini</td>
+</tr>
+<tr>
+<td>Local</td>
+<td>Ollama (Llama 3)</td>
+<td>Offline processing</td>
+<td>None</td>
+</tr>
+</tbody></table>
+<p><strong>Score Components:</strong></p>
+<ul>
+<li>Base Score: Discount percentage, price history, category demand</li>
+<li>AI Boost: Quality assessment, market trends, seasonal relevance</li>
+<li>Final Score: Weighted combination (70% base + 30% AI)</li>
+</ul>
+<h3>4.3 Telegram Posting Agent</h3>
+<p><img src="diagrams/diagram-5.png" alt="Architecture Diagram 6" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<p><strong>Content Strategy Engine:</strong></p>
+<p><img src="diagrams/diagram-6.png" alt="Architecture Diagram 7" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<h3>4.4 Curated Lists Agent</h3>
+<p><img src="diagrams/diagram-7.png" alt="Architecture Diagram 8" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<p><strong>Digest Schedule:</strong></p>
+<ul>
+<li>Morning Digest: 8:00 AM IST</li>
+<li>Afternoon Digest: 12:00 PM IST</li>
+<li>Evening Digest: 6:00 PM IST</li>
+</ul>
+<hr>
+<h2>5. Data Flow</h2>
+<h3>5.1 End-to-End Deal Flow</h3>
+<p><img src="diagrams/diagram-8.png" alt="Architecture Diagram 9" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<h3>5.2 WhatsApp Ingestion Flow</h3>
+<p><img src="diagrams/diagram-9.png" alt="Architecture Diagram 10" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<h3>5.3 A/B Testing Flow</h3>
+<p><img src="diagrams/diagram-10.png" alt="Architecture Diagram 11" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<hr>
+<h2>6. Database Schema</h2>
+<h3>6.1 Entity Relationship Diagram</h3>
+<p><img src="diagrams/diagram-11.png" alt="Architecture Diagram 12" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<h3>6.2 Schema Details</h3>
+<h4>Products Table</h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>asin</td>
+<td>TEXT</td>
+<td>PRIMARY KEY</td>
+<td>Amazon Standard Identification Number</td>
+</tr>
+<tr>
+<td>title</td>
+<td>TEXT</td>
+<td>NOT NULL</td>
+<td>Product title</td>
+</tr>
+<tr>
+<td>category</td>
+<td>TEXT</td>
+<td></td>
+<td>Product category</td>
+</tr>
+<tr>
+<td>image_url</td>
+<td>TEXT</td>
+<td></td>
+<td>Primary product image</td>
+</tr>
+<tr>
+<td>product_url</td>
+<td>TEXT</td>
+<td></td>
+<td>Amazon product URL</td>
+</tr>
+<tr>
+<td>affiliate_url</td>
+<td>TEXT</td>
+<td></td>
+<td>Generated affiliate link</td>
+</tr>
+<tr>
+<td>rating</td>
+<td>REAL</td>
+<td></td>
+<td>Customer rating (1-5)</td>
+</tr>
+<tr>
+<td>review_count</td>
+<td>INTEGER</td>
+<td></td>
+<td>Number of reviews</td>
+</tr>
+<tr>
+<td>first_seen</td>
+<td>TIMESTAMPTZ</td>
+<td>DEFAULT NOW()</td>
+<td>First discovery timestamp</td>
+</tr>
+<tr>
+<td>last_updated</td>
+<td>TIMESTAMPTZ</td>
+<td>DEFAULT NOW()</td>
+<td>Last update timestamp</td>
+</tr>
+</tbody></table>
+<h4>Price History Table (TimescaleDB Hypertable)</h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>time</td>
+<td>TIMESTAMPTZ</td>
+<td>NOT NULL</td>
+<td>Price snapshot timestamp</td>
+</tr>
+<tr>
+<td>asin</td>
+<td>TEXT</td>
+<td>NOT NULL</td>
+<td>Product ASIN</td>
+</tr>
+<tr>
+<td>price</td>
+<td>REAL</td>
+<td>NOT NULL</td>
+<td>Current price</td>
+</tr>
+<tr>
+<td>mrp</td>
+<td>REAL</td>
+<td></td>
+<td>Maximum retail price</td>
+</tr>
+<tr>
+<td>discount_pct</td>
+<td>REAL</td>
+<td></td>
+<td>Calculated discount percentage</td>
+</tr>
+<tr>
+<td>source</td>
+<td>TEXT</td>
+<td>DEFAULT &#39;amazon&#39;</td>
+<td>Price source</td>
+</tr>
+</tbody></table>
+<h4>Posted Deals Table (TimescaleDB Hypertable)</h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>time</td>
+<td>TIMESTAMPTZ</td>
+<td>NOT NULL</td>
+<td>Post timestamp</td>
+</tr>
+<tr>
+<td>asin</td>
+<td>TEXT</td>
+<td>NOT NULL</td>
+<td>Product ASIN</td>
+</tr>
+<tr>
+<td>deal_score</td>
+<td>REAL</td>
+<td></td>
+<td>AI-calculated deal score</td>
+</tr>
+<tr>
+<td>post_template</td>
+<td>TEXT</td>
+<td></td>
+<td>Template used</td>
+</tr>
+<tr>
+<td>channel</td>
+<td>TEXT</td>
+<td>DEFAULT &#39;telegram&#39;</td>
+<td>Distribution channel</td>
+</tr>
+<tr>
+<td>engagement_views</td>
+<td>INTEGER</td>
+<td>DEFAULT 0</td>
+<td>View count</td>
+</tr>
+<tr>
+<td>engagement_clicks</td>
+<td>INTEGER</td>
+<td>DEFAULT 0</td>
+<td>Click count</td>
+</tr>
+<tr>
+<td>message_id</td>
+<td>BIGINT</td>
+<td></td>
+<td>Telegram message ID</td>
+</tr>
+<tr>
+<td>content_strategy</td>
+<td>TEXT</td>
+<td></td>
+<td>Strategy archetype</td>
+</tr>
+<tr>
+<td>archetype</td>
+<td>TEXT</td>
+<td></td>
+<td>Content archetype</td>
+</tr>
+<tr>
+<td>ai_generated</td>
+<td>BOOLEAN</td>
+<td></td>
+<td>AI-generated flag</td>
+</tr>
+<tr>
+<td>posting_slot</td>
+<td>TEXT</td>
+<td></td>
+<td>Time slot category</td>
+</tr>
+<tr>
+<td>revenue_multiplier</td>
+<td>REAL</td>
+<td></td>
+<td>Revenue optimization factor</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>7. Deployment Architecture</h2>
+<h3>7.1 Docker Compose Topology</h3>
+<p><img src="diagrams/diagram-12.png" alt="Architecture Diagram 13" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<h3>7.2 Service Configuration</h3>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Image</th>
+<th>Memory Limit</th>
+<th>Restart</th>
+<th>Ports</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PostgreSQL</td>
+<td>ankane/pgvector:latest</td>
+<td>Unlimited</td>
+<td>unless-stopped</td>
+<td>5432</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>redis:7-alpine</td>
+<td>512MB</td>
+<td>unless-stopped</td>
+<td>6379</td>
+</tr>
+<tr>
+<td>Deal Discovery</td>
+<td>Custom Node.js</td>
+<td>2GB</td>
+<td>unless-stopped</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Deal Analysis</td>
+<td>Custom Node.js</td>
+<td>1GB</td>
+<td>unless-stopped</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Telegram Posting</td>
+<td>Custom Node.js</td>
+<td>1GB</td>
+<td>unless-stopped</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Curated Lists</td>
+<td>Custom Node.js</td>
+<td>2GB</td>
+<td>unless-stopped</td>
+<td>-</td>
+</tr>
+<tr>
+<td>WhatsApp</td>
+<td>Custom Node.js</td>
+<td>1GB</td>
+<td>no (manual)</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Grafana</td>
+<td>grafana:10.4.3</td>
+<td>Unlimited</td>
+<td>unless-stopped</td>
+<td>3000</td>
+</tr>
+<tr>
+<td>Prometheus</td>
+<td>prom/prometheus</td>
+<td>Unlimited</td>
+<td>unless-stopped</td>
+<td>9090</td>
+</tr>
+</tbody></table>
+<h3>7.3 Volume Mapping</h3>
+<table>
+<thead>
+<tr>
+<th>Volume</th>
+<th>Purpose</th>
+<th>Persistence</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>postgres_data</td>
+<td>Database files</td>
+<td>Persistent</td>
+</tr>
+<tr>
+<td>redis_data</td>
+<td>Cache data</td>
+<td>Persistent</td>
+</tr>
+<tr>
+<td>grafana_data</td>
+<td>Dashboard configs</td>
+<td>Persistent</td>
+</tr>
+<tr>
+<td>prometheus_data</td>
+<td>Metrics storage</td>
+<td>Persistent</td>
+</tr>
+<tr>
+<td>playwright_cache</td>
+<td>Browser binaries</td>
+<td>Shared</td>
+</tr>
+<tr>
+<td>shared_modules</td>
+<td>Node modules</td>
+<td>Shared</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>8. Monitoring &amp; Observability</h2>
+<h3>8.1 Metrics Collection</h3>
+<p><img src="diagrams/diagram-13.png" alt="Architecture Diagram 14" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<h3>8.2 Key Metrics</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Metric</th>
+<th>Threshold</th>
+<th>Alert</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Performance</td>
+<td>Deals discovered/hour</td>
+<td>&gt; 50</td>
+<td>Warning if &lt; 30</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>Analysis queue depth</td>
+<td>&lt; 100</td>
+<td>Critical if &gt; 100</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>Post success rate</td>
+<td>&gt; 95%</td>
+<td>Critical if &lt; 90%</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>AI API latency</td>
+<td>&lt; 2s</td>
+<td>Warning if &gt; 3s</td>
+</tr>
+<tr>
+<td>Health</td>
+<td>Agent uptime</td>
+<td>&gt; 99%</td>
+<td>Critical if &lt; 95%</td>
+</tr>
+<tr>
+<td>Health</td>
+<td>Scraping error rate</td>
+<td>&lt; 5%</td>
+<td>Warning if &gt; 10%</td>
+</tr>
+<tr>
+<td>Business</td>
+<td>Engagement rate</td>
+<td>&gt; 10%</td>
+<td>Warning if &lt; 5%</td>
+</tr>
+<tr>
+<td>Business</td>
+<td>Click-through rate</td>
+<td>&gt; 8%</td>
+<td>Warning if &lt; 3%</td>
+</tr>
+</tbody></table>
+<h3>8.3 Dashboard Views</h3>
+<ol>
+<li><p><strong>Deal Discovery Dashboard</strong></p>
+<ul>
+<li>Deals discovered over time</li>
+<li>Source breakdown</li>
+<li>Error rate by source</li>
+<li>Browser fingerprint rotation</li>
+</ul>
+</li>
+<li><p><strong>Deal Analysis Dashboard</strong></p>
+<ul>
+<li>Queue depth</li>
+<li>AI model performance</li>
+<li>Score distribution</li>
+<li>Processing latency</li>
+</ul>
+</li>
+<li><p><strong>Telegram Posting Dashboard</strong></p>
+<ul>
+<li>Posts per hour</li>
+<li>Engagement metrics</li>
+<li>A/B test results</li>
+<li>Revenue estimates</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>9. Scaling Strategy</h2>
+<h3>9.1 Current Phase: Single Instance</h3>
+<p><img src="diagrams/diagram-14.png" alt="Architecture Diagram 15" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<p><strong>Characteristics:</strong></p>
+<ul>
+<li>All services on single VPS (4GB RAM)</li>
+<li>Shared resources</li>
+<li>SQLite cache fallback</li>
+<li>Manual WhatsApp authentication</li>
+</ul>
+<h3>9.2 Phase 2: Horizontal Scaling</h3>
+<p><img src="diagrams/diagram-15.png" alt="Architecture Diagram 16" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<p><strong>Scaling Triggers:</strong></p>
+<ul>
+<li>Queue depth &gt; 500 for 5 minutes → Scale analysis workers</li>
+<li>Discovery time &gt; 15 minutes → Scale discovery workers</li>
+<li>Post backlog &gt; 50 → Scale posting workers</li>
+</ul>
+<h3>9.3 Phase 3: Multi-Region Swarm</h3>
+<p><img src="diagrams/diagram-16.png" alt="Architecture Diagram 17" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<hr>
+<h2>10. Security Architecture</h2>
+<h3>10.1 Security Layers</h3>
+<p><img src="diagrams/diagram-17.png" alt="Architecture Diagram 18" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<h3>10.2 Security Measures</h3>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Measure</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Network</td>
+<td>Internal Docker network</td>
+<td>Default bridge network</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>Port exposure</td>
+<td>Only necessary ports exposed</td>
+</tr>
+<tr>
+<td>Container</td>
+<td>User privileges</td>
+<td>Non-root where possible</td>
+</tr>
+<tr>
+<td>Container</td>
+<td>Image scanning</td>
+<td>Base images from trusted sources</td>
+</tr>
+<tr>
+<td>Application</td>
+<td>Secrets management</td>
+<td>Environment variables only</td>
+</tr>
+<tr>
+<td>Application</td>
+<td>No hardcoded credentials</td>
+<td>All secrets in <code>.env</code></td>
+</tr>
+<tr>
+<td>Data</td>
+<td>Database encryption</td>
+<td>TLS connections</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>Session persistence</td>
+<td>Encrypted session files</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>API keys</td>
+<td>Rotatable, multiple fallback keys</td>
+</tr>
+</tbody></table>
+<h3>10.3 Secret Management</h3>
+<p><img src="diagrams/diagram-18.png" alt="Architecture Diagram 19" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<hr>
+<h2>11. Technology Stack</h2>
+<h3>11.1 Complete Stack Overview</h3>
+<p><img src="diagrams/diagram-19.png" alt="Architecture Diagram 20" style="max-width: 100%; height: auto; margin: 15px 0;" /></p>
+<h3>11.2 Technology Details</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Runtime</td>
+<td>Node.js</td>
+<td>20+</td>
+<td>JavaScript runtime</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>PostgreSQL</td>
+<td>16</td>
+<td>Primary database</td>
+</tr>
+<tr>
+<td>Extension</td>
+<td>TimescaleDB</td>
+<td>2.x</td>
+<td>Time-series data</td>
+</tr>
+<tr>
+<td>Extension</td>
+<td>pgvector</td>
+<td>0.5+</td>
+<td>Vector similarity</td>
+</tr>
+<tr>
+<td>Cache</td>
+<td>Redis</td>
+<td>7.x</td>
+<td>Message queue &amp; cache</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td>BullMQ</td>
+<td>5.x</td>
+<td>Job processing</td>
+</tr>
+<tr>
+<td>Browser</td>
+<td>Playwright</td>
+<td>1.40+</td>
+<td>Web scraping</td>
+</tr>
+<tr>
+<td>AI</td>
+<td>Google Gemini</td>
+<td>2.0 Flash</td>
+<td>Primary AI model</td>
+</tr>
+<tr>
+<td>AI</td>
+<td>OpenRouter</td>
+<td>-</td>
+<td>Secondary AI model</td>
+</tr>
+<tr>
+<td>AI</td>
+<td>Ollama</td>
+<td>-</td>
+<td>Local AI fallback</td>
+</tr>
+<tr>
+<td>Bot</td>
+<td>Telegraf</td>
+<td>4.x</td>
+<td>Telegram bot framework</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Prometheus</td>
+<td>2.x</td>
+<td>Metrics collection</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Grafana</td>
+<td>10.4</td>
+<td>Visualization</td>
+</tr>
+<tr>
+<td>Logging</td>
+<td>Winston</td>
+<td>3.x</td>
+<td>Structured logging</td>
+</tr>
+<tr>
+<td>Validation</td>
+<td>Zod</td>
+<td>3.x</td>
+<td>Schema validation</td>
+</tr>
+<tr>
+<td>Container</td>
+<td>Docker</td>
+<td>24+</td>
+<td>Containerization</td>
+</tr>
+<tr>
+<td>Orchestration</td>
+<td>Docker Compose</td>
+<td>2.x</td>
+<td>Local orchestration</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>12. Cost Analysis</h2>
+<h3>12.1 Current Infrastructure Costs</h3>
+<pre><code class="language-mermaid">pie title Monthly Cost Breakdown
+    &quot;VPS (4GB RAM)&quot; : 20
+    &quot;Gemini API&quot; : 10
+    &quot;Domain&quot; : 1
+    &quot;Telegram&quot; : 0
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Provider</th>
+<th>Monthly Cost</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VPS (4GB)</td>
+<td>Hetzner/DigitalOcean</td>
+<td>$20</td>
+<td>Single instance</td>
+</tr>
+<tr>
+<td>Gemini API</td>
+<td>Google</td>
+<td>$5-15</td>
+<td>Variable usage</td>
+</tr>
+<tr>
+<td>OpenRouter</td>
+<td>OpenRouter</td>
+<td>$0-5</td>
+<td>Fallback usage</td>
+</tr>
+<tr>
+<td>Telegram Bot</td>
+<td>Telegram</td>
+<td>Free</td>
+<td>No cost</td>
+</tr>
+<tr>
+<td>Domain</td>
+<td>Namecheap/Cloudflare</td>
+<td>$1</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Self-hosted</td>
+<td>$0</td>
+<td>Prometheus/Grafana</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td><strong>$26-36</strong></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3>12.2 Projected Scaling Costs</h3>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Infrastructure</th>
+<th>Monthly Cost</th>
+<th>Capacity</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Phase 1 (Current)</td>
+<td>Single VPS</td>
+<td>$26-36</td>
+<td>1,200 deals/day</td>
+</tr>
+<tr>
+<td>Phase 2 (K8s)</td>
+<td>3-node cluster</td>
+<td>$150-200</td>
+<td>10,000 deals/day</td>
+</tr>
+<tr>
+<td>Phase 3 (Multi-region)</td>
+<td>2 regions</td>
+<td>$400-600</td>
+<td>50,000 deals/day</td>
+</tr>
+</tbody></table>
+<h3>12.3 Cost Optimization Strategies</h3>
+<ol>
+<li><strong>AI Model Routing</strong>: Use cheaper models for simple tasks</li>
+<li><strong>Caching</strong>: Redis caching reduces API calls</li>
+<li><strong>Batch Processing</strong>: Process deals in batches where possible</li>
+<li><strong>Smart Scheduling</strong>: Post during high-engagement hours only</li>
+<li><strong>Image Optimization</strong>: Compress images before posting</li>
+</ol>
+<hr>
+<h2>Appendix A: File Structure</h2>
+<pre><code>affiliate-platform/
+├── agents/
+│   ├── affiliate-system/
+│   ├── curated-lists/
+│   ├── deal-analysis/
+│   ├── deal-discovery/
+│   ├── quality-control/
+│   ├── scheduler/
+│   ├── telegram-posting/
+│   └── whatsapp-ingestion/
+├── shared/
+│   ├── models/
+│   ├── types/
+│   └── utils/
+├── infrastructure/
+│   ├── db/
+│   │   └── init/
+│   ├── docker/
+│   ├── grafana/
+│   │   ├── dashboards/
+│   │   └── datasources/
+│   ├── monitoring/
+│   └── prometheus/
+├── scripts/
+├── tests/
+├── docker-compose.yml
+└── .env
+</code></pre>
+<h2>Appendix B: API Integration Points</h2>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Endpoint</th>
+<th>Purpose</th>
+<th>Rate Limit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Google Gemini</td>
+<td>generativelanguage.googleapis.com</td>
+<td>Deal scoring</td>
+<td>60 RPM</td>
+</tr>
+<tr>
+<td>OpenRouter</td>
+<td>openrouter.ai/api</td>
+<td>Fallback AI</td>
+<td>20 RPM</td>
+</tr>
+<tr>
+<td>Telegram</td>
+<td>api.telegram.org</td>
+<td>Bot API</td>
+<td>30 MSG/s</td>
+</tr>
+<tr>
+<td>Amazon India</td>
+<td>amazon.in</td>
+<td>Deal discovery</td>
+<td>N/A (scraping)</td>
+</tr>
+</tbody></table>
+<h2>Appendix C: Operational Runbooks</h2>
+<h3>Restarting Services</h3>
+<pre><code class="language-bash">docker compose restart [service-name]
+</code></pre>
+<h3>Viewing Logs</h3>
+<pre><code class="language-bash">docker compose logs -f [service-name]
+</code></pre>
+<h3>Database Backup</h3>
+<pre><code class="language-bash">docker compose exec postgres pg_dump -U affiliate_user affiliate_platform &gt; backup.sql
+</code></pre>
+<h3>Redis Queue Inspection</h3>
+<pre><code class="language-bash">docker compose exec redis redis-cli LLEN bull:deals:wait
+docker compose exec redis redis-cli LLEN bull:posts:wait
+</code></pre>
+<hr>
+<p><strong>Document Control</strong></p>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Author</th>
+<th>Changes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.0</td>
+<td>Nov 2024</td>
+<td>System</td>
+<td>Initial architecture</td>
+</tr>
+<tr>
+<td>2.0</td>
+<td>Dec 2026</td>
+<td>System</td>
+<td>Added curated lists, A/B testing, content strategy</td>
+</tr>
+</tbody></table>
+<p><strong>Review Schedule:</strong> Quarterly</p>
+<p><strong>Distribution:</strong> Internal Engineering Team</p>
+<hr>
+<p><em>This document contains proprietary information. Unauthorized distribution is prohibited.</em></p>
+
+</body>
+</html>

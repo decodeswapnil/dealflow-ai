@@ -1,0 +1,68 @@
+graph LR
+    subgraph "Shared Infrastructure"
+        SU[Shared Utils]
+        ST[Shared Types<br/>Zod Schemas]
+        SM[Shared Models]
+    end
+
+    subgraph "Agent Layer"
+        direction TB
+        A1[Deal Discovery]
+        A2[WhatsApp Ingestion]
+        A3[Deal Analysis]
+        A4[Telegram Posting]
+        A5[Curated Lists]
+        A6[Quality Control]
+    end
+
+    subgraph "Service Layer"
+        DB[(Database)]
+        RQ[Message Queue]
+        CA[Cache]
+    end
+
+    subgraph "External APIs"
+        GEM[Google Gemini]
+        OR[OpenRouter]
+        OL[Ollama]
+        TG[Telegram API]
+        AMZ[Amazon]
+    end
+
+    SU --> A1
+    SU --> A2
+    SU --> A3
+    SU --> A4
+    SU --> A5
+    SU --> A6
+    ST --> A1
+    ST --> A2
+    ST --> A3
+    ST --> A4
+    ST --> A5
+    ST --> A6
+    SM --> A3
+    SM --> A4
+    SM --> A5
+
+    A1 --> DB
+    A1 --> RQ
+    A2 --> DB
+    A2 --> RQ
+    A3 --> DB
+    A3 --> RQ
+    A3 --> CA
+    A4 --> DB
+    A4 --> RQ
+    A5 --> DB
+    A5 --> RQ
+    A6 --> DB
+
+    A3 --> GEM
+    A3 --> OR
+    A3 --> OL
+    A4 --> TG
+    A5 --> GEM
+    A5 --> OR
+    A1 --> AMZ
+    A2 --> WA

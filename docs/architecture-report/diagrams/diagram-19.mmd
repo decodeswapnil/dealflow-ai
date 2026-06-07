@@ -1,0 +1,55 @@
+graph TB
+    subgraph "Runtime"
+        NODE[Node.js 20+]
+        ESM[ES Modules]
+    end
+
+    subgraph "Data"
+        PG[(PostgreSQL 16)]
+        TS[TimescaleDB]
+        PV[pgvector]
+        RD[(Redis 7)]
+        BQ[BullMQ]
+    end
+
+    subgraph "Browser Automation"
+        PW[Playwright]
+        SB[Stealth Browser]
+        FP[Fingerprinting]
+    end
+
+    subgraph "AI/ML"
+        GEM[Google Gemini]
+        OR[OpenRouter]
+        OL[Ollama]
+        ZOD[Zod Schema]
+    end
+
+    subgraph "Messaging"
+        TF[Telegraf]
+        TG[Telegram API]
+        WA[WhatsApp Web]
+    end
+
+    subgraph "Monitoring"
+        PR[Prometheus]
+        GF[Grafana]
+        JL[Winston Logger]
+    end
+
+    subgraph "Infrastructure"
+        DK[Docker]
+        DC[Docker Compose]
+        NG[Nginx]
+    end
+
+    NODE --> PW
+    NODE --> BQ
+    NODE --> TF
+    NODE --> JL
+    PW --> SB
+    SB --> FP
+    BQ --> RD
+    TF --> TG
+    PG --> TS
+    TS --> PV

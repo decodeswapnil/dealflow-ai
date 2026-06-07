@@ -1,0 +1,20 @@
+graph LR
+    subgraph "Secret Sources"
+        ENV[.env File]
+        DC[Docker Compose]
+        RUN[Runtime Env]
+    end
+
+    subgraph "Consumers"
+        GEM[Gemini API Keys]
+        OR[OpenRouter Key]
+        TG[Telegram Token]
+        DB[DB Password]
+    end
+
+    ENV --> DC
+    DC --> RUN
+    RUN --> GEM
+    RUN --> OR
+    RUN --> TG
+    RUN --> DB

@@ -1,0 +1,29 @@
+graph TB
+    subgraph "Region 1: Mumbai"
+        R1A[Discovery Nodes]
+        R1B[Analysis Nodes]
+        R1C[Local DB Replica]
+    end
+
+    subgraph "Region 2: Singapore"
+        R2A[Discovery Nodes]
+        R2B[Analysis Nodes]
+        R2C[Local DB Replica]
+    end
+
+    subgraph "Global Services"
+        GLB[Global Load Balancer]
+        MDB[(Primary DB)]
+        AI[AI Model Router]
+    end
+
+    GLB --> R1A
+    GLB --> R2A
+    R1A --> R1B
+    R2A --> R2B
+    R1B --> R1C
+    R2B --> R2C
+    R1C --> MDB
+    R2C --> MDB
+    R1B --> AI
+    R2B --> AI

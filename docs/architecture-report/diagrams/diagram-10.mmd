@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant TP as Telegram Posting
+    participant AB as A/B Engine
+    participant PG as PostgreSQL
+    participant TG as Telegram
+
+    TP->>AB: Request variant for deal
+    AB->>PG: Check active tests
+    PG-->>AB: Test configuration
+    AB->>AB: Select variant (A/B)
+    AB-->>TP: Variant assignment
+    TP->>TG: Post with variant
+    TG-->>TP: Message ID
+    TP->>PG: Store assignment
+    loop Every hour
+        TP->>TG: Fetch engagement metrics
+        TG-->>TP: Views, clicks
+        TP->>PG: Update metrics
+    end

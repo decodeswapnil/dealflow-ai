@@ -1,0 +1,19 @@
+flowchart TD
+    Start([Cron Trigger<br/>Every 30 min]) --> Init[Initialize Stealth Browser]
+    Init --> FP[Generate Browser Fingerprint]
+    FP --> Nav[Navigate to Amazon Deals]
+    Nav --> Extract[Extract Deal Data]
+    Extract --> Validate{Valid Deal?}
+    Validate -->|Yes| Enrich[Enrich with Metadata]
+    Validate -->|No| Discard[Discard]
+    Enrich --> Deduplicate{Duplicate?}
+    Deduplicate -->|No| Queue[Add to Deals Queue]
+    Deduplicate -->|Yes| Discard
+    Queue --> Store[Store in Database]
+    Store --> End([End Cycle])
+    Discard --> End
+
+    style Start fill:#e1f5fe
+    style End fill:#e1f5fe
+    style Queue fill:#c8e6c9
+    style Discard fill:#ffcdd2

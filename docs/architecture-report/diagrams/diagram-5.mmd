@@ -1,0 +1,17 @@
+flowchart TD
+    Start([Queue Worker]) --> Receive[Receive Scored Deal]
+    Receive --> Strategy[Determine Content Strategy]
+    Strategy --> Archetype[Select Archetype]
+    Archetype --> Caption[Generate Caption]
+    Caption --> Image[Extract Product Image]
+    Image --> Format[Format Message]
+    Format --> RateLimit{Rate Limit OK?}
+    RateLimit -->|Yes| Post[Post to Channel]
+    RateLimit -->|No| Delay[Delay 2s]
+    Delay --> RateLimit
+    Post --> Track[Track Engagement]
+    Track --> Store[Store Metrics]
+    Store --> End([End])
+
+    style Start fill:#e1f5fe
+    style Post fill:#c8e6c9

@@ -1,0 +1,11 @@
+graph TB
+    subgraph "Single Host Deployment"
+        D[Docker Compose]
+        D --> PG[(PostgreSQL)]
+        D --> RD[(Redis)]
+        D --> DD[Deal Discovery]
+        D --> DA[Deal Analysis]
+        D --> TP[Telegram Posting]
+        D --> GF[Grafana]
+        D --> PR[Prometheus]
+    end

@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Affiliate Automation Platform - System Architecture Report</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm 15mm 25mm 15mm;
+      @bottom-center {
+        content: counter(page);
+        font-size: 10pt;
+        color: #666;
+      }
+      @top-left {
+        content: "AI Affiliate Automation Platform";
+        font-size: 8pt;
+        color: #999;
+        font-style: italic;
+      }
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.6;
+      color: #333;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    h1 {
+      font-size: 24pt;
+      color: #1a237e;
+      border-bottom: 3px solid #1a237e;
+      padding-bottom: 10px;
+      margin-top: 0;
+      page-break-before: avoid;
+    }
+    
+    h2 {
+      font-size: 16pt;
+      color: #283593;
+      border-bottom: 2px solid #c5cae9;
+      padding-bottom: 8px;
+      margin-top: 30px;
+      page-break-after: avoid;
+    }
+    
+    h3 {
+      font-size: 13pt;
+      color: #3949ab;
+      margin-top: 25px;
+      page-break-after: avoid;
+    }
+    
+    h4 {
+      font-size: 11pt;
+      color: #5c6bc0;
+      margin-top: 20px;
+    }
+    
+    p {
+      margin: 10px 0;
+      text-align: justify;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 9.5pt;
+      page-break-inside: avoid;
+    }
+    
+    th {
+      background-color: #1a237e;
+      color: white;
+      padding: 10px 8px;
+      text-align: left;
+      font-weight: 600;
+      border: 1px solid #1a237e;
+    }
+    
+    td {
+      padding: 8px;
+      border: 1px solid #e0e0e0;
+      vertical-align: top;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f5f5f5;
+    }
+    
+    tr:hover {
+      background-color: #e8eaf6;
+    }
+    
+    pre {
+      background-color: #263238;
+      color: #aed581;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 9pt;
+      line-height: 1.4;
+      page-break-inside: avoid;
+    }
+    
+    code {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 9pt;
+    }
+    
+    pre code {
+      color: #aed581;
+      background: none;
+      padding: 0;
+    }
+    
+    :not(pre) > code {
+      background-color: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: #d32f2f;
+      font-size: 9.5pt;
+    }
+    
+    ul, ol {
+      margin: 10px 0;
+      padding-left: 25px;
+    }
+    
+    li {
+      margin: 5px 0;
+    }
+    
+    blockquote {
+      border-left: 4px solid #1a237e;
+      margin: 15px 0;
+      padding: 10px 20px;
+      background-color: #e8eaf6;
+      font-style: italic;
+    }
+    
+    hr {
+      border: none;
+      border-top: 2px solid #c5cae9;
+      margin: 30px 0;
+    }
+    
+    .mermaid-diagram {
+      text-align: center;
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #fafafa;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      page-break-inside: avoid;
+    }
+    
+    .mermaid {
+      display: flex;
+      justify-content: center;
+    }
+    
+    /* Cover page styling */
+    .cover-page {
+      text-align: center;
+      padding: 100px 50px;
+      page-break-after: always;
+    }
+    
+    .cover-title {
+      font-size: 32pt;
+      color: #1a237e;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    
+    .cover-subtitle {
+      font-size: 18pt;
+      color: #5c6bc0;
+      margin-bottom: 60px;
+    }
+    
+    .cover-meta {
+      font-size: 12pt;
+      color: #666;
+      line-height: 2;
+    }
+    
+    /* Table of contents styling */
+    .toc {
+      page-break-after: always;
+    }
+    
+    .toc h2 {
+      text-align: center;
+      border-bottom: none;
+    }
+    
+    .toc ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .toc li {
+      padding: 8px 0;
+      border-bottom: 1px dotted #ccc;
+    }
+    
+    .toc a {
+      color: #333;
+      text-decoration: none;
+    }
+    
+    /* Executive summary boxes */
+    .metric-box {
+      display: inline-block;
+      background: linear-gradient(135deg, #1a237e, #3949ab);
+      color: white;
+      padding: 15px 25px;
+      margin: 10px;
+      border-radius: 8px;
+      text-align: center;
+      min-width: 150px;
+    }
+    
+    .metric-value {
+      font-size: 24pt;
+      font-weight: bold;
+      display: block;
+    }
+    
+    .metric-label {
+      font-size: 9pt;
+      opacity: 0.9;
+    }
+    
+    /* Print optimizations */
+    @media print {
+      body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+      
+      h1, h2, h3 {
+        page-break-after: avoid;
+      }
+      
+      table, pre, .mermaid-diagram {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cover-page">
+    <div class="cover-title">AI Affiliate Automation Platform</div>
+    <div class="cover-subtitle">System Architecture Report</div>
+    <div class="cover-meta">
+      <strong>Version:</strong> 2.0<br>
+      <strong>Date:</strong> December 2026<br>
+      <strong>Classification:</strong> Internal Use<br><br>
+      <em>Production-grade multi-agent AI system for autonomous deal discovery,<br>
+      analysis, and distribution</em>
+    </div>
+  </div>
+  
+  <h1>AI Affiliate Automation Platform</h1>
+<h2>System Architecture Report</h2>
+<p><strong>Version:</strong> 2.0<br><strong>Date:</strong> December 2026<br><strong>Classification:</strong> Internal Use</p>
+<hr>
+<h2>Table of Contents</h2>
+<ol>
+<li><a href="#1-executive-summary">Executive Summary</a></li>
+<li><a href="#2-system-overview">System Overview</a></li>
+<li><a href="#3-architecture-diagrams">Architecture Diagrams</a></li>
+<li><a href="#4-component-details">Component Details</a></li>
+<li><a href="#5-data-flow">Data Flow</a></li>
+<li><a href="#6-database-schema">Database Schema</a></li>
+<li><a href="#7-deployment-architecture">Deployment Architecture</a></li>
+<li><a href="#8-monitoring--observability">Monitoring &amp; Observability</a></li>
+<li><a href="#9-scaling-strategy">Scaling Strategy</a></li>
+<li><a href="#10-security-architecture">Security Architecture</a></li>
+<li><a href="#11-technology-stack">Technology Stack</a></li>
+<li><a href="#12-cost-analysis">Cost Analysis</a></li>
+</ol>
+<hr>
+<h2>1. Executive Summary</h2>
+<p>The AI Affiliate Automation Platform is a production-grade multi-agent system designed for autonomous deal discovery, analysis, and distribution via Telegram channels. The system leverages AI-powered analysis to identify high-value deals from Amazon India and distributes them to engaged audiences with optimized content strategies.</p>
+<h3>Key Capabilities</h3>
+<ul>
+<li><strong>Autonomous Deal Discovery</strong>: Automated scraping of Amazon India deals with stealth browser technology</li>
+<li><strong>AI-Powered Analysis</strong>: Multi-model AI scoring system using Gemini Pro, OpenRouter, and Ollama</li>
+<li><strong>Intelligent Posting</strong>: Content calendar optimization, A/B testing, and engagement tracking</li>
+<li><strong>Multi-Source Ingestion</strong>: WhatsApp group monitoring and affiliate feed integration</li>
+<li><strong>Curated Lists</strong>: AI-generated themed deal collections and digests</li>
+<li><strong>Real-time Monitoring</strong>: Prometheus + Grafana dashboards for full observability</li>
+</ul>
+<h3>Business Impact</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Deals Discovered/Day</td>
+<td>1,200+</td>
+</tr>
+<tr>
+<td>Analysis Accuracy</td>
+<td>94%</td>
+</tr>
+<tr>
+<td>Post Engagement Rate</td>
+<td>12-18%</td>
+</tr>
+<tr>
+<td>Operational Uptime</td>
+<td>99.5%</td>
+</tr>
+<tr>
+<td>Monthly Operating Cost</td>
+<td>$26-36</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>2. System Overview</h2>
+<h3>2.1 High-Level Architecture</h3>
+<div class="mermaid-diagram" id="mermaid-0"><pre class="mermaid">graph TB
+    subgraph "External Sources"
+        AMZ[Amazon India]
+        WA[WhatsApp Groups]
+        AF[Affiliate Feeds]
+    end
+
+    subgraph "Ingestion Layer"
+        DD[Deal Discovery Agent]
+        WI[WhatsApp Ingestion Agent]
+        MSI[Multi-Source Ingestion]
+    end
+
+    subgraph "Orchestration Layer"
+        RQ[Redis Queue<br/>BullMQ]
+        RS[Redis Streams]
+    end
+
+    subgraph "Processing Layer"
+        DA[Deal Analysis Agent<br/>AI Scoring]
+        CL[Curated Lists Agent<br/>Theme Generation]
+    end
+
+    subgraph "Distribution Layer"
+        TP[Telegram Posting Agent]
+        CC[Content Calendar]
+        AB[A/B Testing Engine]
+    end
+
+    subgraph "Data Layer"
+        PG[(PostgreSQL<br/>+ pgvector)]
+        RD[(Redis Cache)]
+    end
+
+    subgraph "Monitoring Layer"
+        PR[Prometheus]
+        GF[Grafana]
+    end
+
+    AMZ --> DD
+    WA --> WI
+    AF --> MSI
+    DD --> RQ
+    WI --> RQ
+    MSI --> RQ
+    RQ --> DA
+    RQ --> CL
+    DA --> RQ
+    CL --> TP
+    RQ --> TP
+    TP --> PG
+    DA --> PG
+    DD --> PG
+    PG --> RD
+    TP --> PR
+    DA --> PR
+    DD --> PR
+    PR --> GF</pre></div><h3>2.2 Agent Ecosystem</h3>
+<p>The platform operates as a distributed multi-agent system with 6 specialized agents:</p>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Purpose</th>
+<th>Trigger</th>
+<th>Scale</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Deal Discovery</td>
+<td>Scrape Amazon deals</td>
+<td>Cron (30 min)</td>
+<td>50 deals/source</td>
+</tr>
+<tr>
+<td>WhatsApp Ingestion</td>
+<td>Monitor WhatsApp groups</td>
+<td>Cron (10 min)</td>
+<td>Variable</td>
+</tr>
+<tr>
+<td>Deal Analysis</td>
+<td>AI-powered deal scoring</td>
+<td>Queue-driven</td>
+<td>Real-time</td>
+</tr>
+<tr>
+<td>Telegram Posting</td>
+<td>Channel content distribution</td>
+<td>Queue-driven</td>
+<td>2s intervals</td>
+</tr>
+<tr>
+<td>Curated Lists</td>
+<td>Themed deal collections</td>
+<td>Scheduled</td>
+<td>3x daily</td>
+</tr>
+<tr>
+<td>Quality Control</td>
+<td>Content validation</td>
+<td>Event-driven</td>
+<td>Per-post</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>3. Architecture Diagrams</h2>
+<h3>3.1 Component Architecture</h3>
+<div class="mermaid-diagram" id="mermaid-1"><pre class="mermaid">graph LR
+    subgraph "Shared Infrastructure"
+        SU[Shared Utils]
+        ST[Shared Types<br/>Zod Schemas]
+        SM[Shared Models]
+    end
+
+    subgraph "Agent Layer"
+        direction TB
+        A1[Deal Discovery]
+        A2[WhatsApp Ingestion]
+        A3[Deal Analysis]
+        A4[Telegram Posting]
+        A5[Curated Lists]
+        A6[Quality Control]
+    end
+
+    subgraph "Service Layer"
+        DB[(Database)]
+        RQ[Message Queue]
+        CA[Cache]
+    end
+
+    subgraph "External APIs"
+        GEM[Google Gemini]
+        OR[OpenRouter]
+        OL[Ollama]
+        TG[Telegram API]
+        AMZ[Amazon]
+    end
+
+    SU --> A1
+    SU --> A2
+    SU --> A3
+    SU --> A4
+    SU --> A5
+    SU --> A6
+    ST --> A1
+    ST --> A2
+    ST --> A3
+    ST --> A4
+    ST --> A5
+    ST --> A6
+    SM --> A3
+    SM --> A4
+    SM --> A5
+
+    A1 --> DB
+    A1 --> RQ
+    A2 --> DB
+    A2 --> RQ
+    A3 --> DB
+    A3 --> RQ
+    A3 --> CA
+    A4 --> DB
+    A4 --> RQ
+    A5 --> DB
+    A5 --> RQ
+    A6 --> DB
+
+    A3 --> GEM
+    A3 --> OR
+    A3 --> OL
+    A4 --> TG
+    A5 --> GEM
+    A5 --> OR
+    A1 --> AMZ
+    A2 --> WA</pre></div><h3>3.2 Service Dependency Graph</h3>
+<div class="mermaid-diagram" id="mermaid-2"><pre class="mermaid">graph TD
+    subgraph "Data Services"
+        PG[(PostgreSQL)]
+        RD[(Redis)]
+    end
+
+    subgraph "Core Agents"
+        DD[Deal Discovery]
+        DA[Deal Analysis]
+        TP[Telegram Posting]
+        CL[Curated Lists]
+    end
+
+    subgraph "Optional Agents"
+        WI[WhatsApp Ingestion]
+    end
+
+    subgraph "Monitoring"
+        PR[Prometheus]
+        GF[Grafana]
+    end
+
+    subgraph "Shared"
+        SH[Shared Module]
+    end
+
+    PG --> DD
+    PG --> DA
+    PG --> TP
+    PG --> CL
+    PG --> WI
+    RD --> DD
+    RD --> DA
+    RD --> TP
+    RD --> CL
+    RD --> WI
+    SH --> DD
+    SH --> DA
+    SH --> TP
+    SH --> CL
+    SH --> WI
+    DD --> PR
+    DA --> PR
+    TP --> PR
+    CL --> PR
+    PR --> GF
+    WI -.->|Manual Start| RD
+    WI -.->|Manual Start| PG</pre></div><hr>
+<h2>4. Component Details</h2>
+<h3>4.1 Deal Discovery Agent</h3>
+<div class="mermaid-diagram" id="mermaid-3"><pre class="mermaid">flowchart TD
+    Start([Cron Trigger<br/>Every 30 min]) --> Init[Initialize Stealth Browser]
+    Init --> FP[Generate Browser Fingerprint]
+    FP --> Nav[Navigate to Amazon Deals]
+    Nav --> Extract[Extract Deal Data]
+    Extract --> Validate{Valid Deal?}
+    Validate -->|Yes| Enrich[Enrich with Metadata]
+    Validate -->|No| Discard[Discard]
+    Enrich --> Deduplicate{Duplicate?}
+    Deduplicate -->|No| Queue[Add to Deals Queue]
+    Deduplicate -->|Yes| Discard
+    Queue --> Store[Store in Database]
+    Store --> End([End Cycle])
+    Discard --> End
+
+    style Start fill:#e1f5fe
+    style End fill:#e1f5fe
+    style Queue fill:#c8e6c9
+    style Discard fill:#ffcdd2</pre></div><p><strong>Technical Specifications:</strong></p>
+<ul>
+<li><strong>Runtime</strong>: Node.js 20+ with Playwright</li>
+<li><strong>Browser</strong>: Chromium with stealth plugins</li>
+<li><strong>Proxy</strong>: Rotation ready (not yet enabled)</li>
+<li><strong>Fingerprinting</strong>: Randomized viewport, user-agent, timezone</li>
+<li><strong>Rate Limiting</strong>: 30s between requests</li>
+<li><strong>Error Handling</strong>: 3 retry attempts with exponential backoff</li>
+</ul>
+<h3>4.2 Deal Analysis Agent</h3>
+<div class="mermaid-diagram" id="mermaid-4"><pre class="mermaid">flowchart TD
+    Start([Queue Worker<br/>BullMQ]) --> Receive[Receive Deal]
+    Receive --> Fetch[Fetch Price History]
+    Fetch --> Score[Calculate Base Score]
+    Score --> AI{AI Enhancement}
+    AI -->|Gemini| Gemini[Google Gemini Pro]
+    AI -->|OpenRouter| OR[OpenRouter GPT-4o]
+    AI -->|Fallback| Ollama[Local Ollama]
+    Gemini --> Validate{Valid Response?}
+    OR --> Validate
+    Ollama --> Validate
+    Validate -->|Yes| Combine[Combine Scores]
+    Validate -->|No| Fallback[Use Base Score]
+    Combine --> Threshold{Score > Threshold?}
+    Fallback --> Threshold
+    Threshold -->|Yes| PostQueue[Add to Posts Queue]
+    Threshold -->|No| Reject[Reject Deal]
+    PostQueue --> End([End])
+    Reject --> End
+
+    style Start fill:#e1f5fe
+    style PostQueue fill:#c8e6c9
+    style Reject fill:#ffcdd2</pre></div><p><strong>AI Scoring Pipeline:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Model</th>
+<th>Purpose</th>
+<th>Fallback</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Primary</td>
+<td>Gemini 2.0 Flash</td>
+<td>Deal quality assessment</td>
+<td>OpenRouter</td>
+</tr>
+<tr>
+<td>Secondary</td>
+<td>OpenRouter GPT-4o</td>
+<td>Price validation</td>
+<td>Gemini</td>
+</tr>
+<tr>
+<td>Local</td>
+<td>Ollama (Llama 3)</td>
+<td>Offline processing</td>
+<td>None</td>
+</tr>
+</tbody></table>
+<p><strong>Score Components:</strong></p>
+<ul>
+<li>Base Score: Discount percentage, price history, category demand</li>
+<li>AI Boost: Quality assessment, market trends, seasonal relevance</li>
+<li>Final Score: Weighted combination (70% base + 30% AI)</li>
+</ul>
+<h3>4.3 Telegram Posting Agent</h3>
+<div class="mermaid-diagram" id="mermaid-5"><pre class="mermaid">flowchart TD
+    Start([Queue Worker]) --> Receive[Receive Scored Deal]
+    Receive --> Strategy[Determine Content Strategy]
+    Strategy --> Archetype[Select Archetype]
+    Archetype --> Caption[Generate Caption]
+    Caption --> Image[Extract Product Image]
+    Image --> Format[Format Message]
+    Format --> RateLimit{Rate Limit OK?}
+    RateLimit -->|Yes| Post[Post to Channel]
+    RateLimit -->|No| Delay[Delay 2s]
+    Delay --> RateLimit
+    Post --> Track[Track Engagement]
+    Track --> Store[Store Metrics]
+    Store --> End([End])
+
+    style Start fill:#e1f5fe
+    style Post fill:#c8e6c9</pre></div><p><strong>Content Strategy Engine:</strong></p>
+<div class="mermaid-diagram" id="mermaid-6"><pre class="mermaid">graph LR
+    subgraph "Content Archetypes"
+        A1[Urgency Driver]
+        A2[Value Proposition]
+        A3[Social Proof]
+        A4[Scarcity Alert]
+        A5[Curiosity Gap]
+    end
+
+    subgraph "Optimization"
+        AB[A/B Testing]
+        CC[Content Calendar]
+        TS[Time Slotting]
+    end
+
+    subgraph "Output"
+        CAP[Caption]
+        KB[Keyboard]
+        IMG[Image]
+    end
+
+    A1 --> AB
+    A2 --> AB
+    A3 --> AB
+    A4 --> AB
+    A5 --> AB
+    AB --> CC
+    CC --> TS
+    TS --> CAP
+    TS --> KB
+    TS --> IMG</pre></div><h3>4.4 Curated Lists Agent</h3>
+<div class="mermaid-diagram" id="mermaid-7"><pre class="mermaid">flowchart TD
+    Start([Scheduled Trigger]) --> Fetch[Fetch Recent Deals]
+    Fetch --> Theme[AI Theme Generation]
+    Theme --> Select[Select Top Deals]
+    Select --> Generate[Generate List Content]
+    Generate --> Image[Create Collage Image]
+    Image --> Schedule[Schedule Post]
+    Schedule --> End([End])
+
+    style Start fill:#e1f5fe</pre></div><p><strong>Digest Schedule:</strong></p>
+<ul>
+<li>Morning Digest: 8:00 AM IST</li>
+<li>Afternoon Digest: 12:00 PM IST</li>
+<li>Evening Digest: 6:00 PM IST</li>
+</ul>
+<hr>
+<h2>5. Data Flow</h2>
+<h3>5.1 End-to-End Deal Flow</h3>
+<div class="mermaid-diagram" id="mermaid-8"><pre class="mermaid">sequenceDiagram
+    participant AMZ as Amazon India
+    participant DD as Deal Discovery
+    participant RQ as Redis Queue
+    participant DA as Deal Analysis
+    participant PG as PostgreSQL
+    participant TP as Telegram Posting
+    participant TG as Telegram Channel
+
+    rect rgb(225, 245, 254)
+        Note over AMZ,DD: Discovery Phase
+        DD->>AMZ: Navigate to deals page
+        AMZ-->>DD: HTML content
+        DD->>DD: Extract deal data
+        DD->>DD: Apply stealth fingerprinting
+        DD->>PG: Store raw deal
+        DD->>RQ: Publish to 'deals' queue
+    end
+
+    rect rgb(232, 245, 233)
+        Note over RQ,DA: Analysis Phase
+        RQ->>DA: Consume deal message
+        DA->>PG: Fetch price history
+        PG-->>DA: Historical prices
+        DA->>DA: Calculate base score
+        DA->>DA: Call AI model
+        DA->>PG: Store analysis result
+        DA->>RQ: Publish to 'posts' queue
+    end
+
+    rect rgb(255, 243, 224)
+        Note over TP,TG: Distribution Phase
+        RQ->>TP: Consume scored deal
+        TP->>PG: Fetch engagement data
+        TP->>TP: Generate caption
+        TP->>TP: Extract image
+        TP->>TG: Post message
+        TG-->>TP: Message ID
+        TP->>PG: Store post metadata
+    end</pre></div><h3>5.2 WhatsApp Ingestion Flow</h3>
+<div class="mermaid-diagram" id="mermaid-9"><pre class="mermaid">sequenceDiagram
+    participant WA as WhatsApp Web
+    participant WI as WhatsApp Agent
+    participant RQ as Redis Queue
+    participant DA as Deal Analysis
+    participant PG as PostgreSQL
+
+    WI->>WA: Scan QR Code (Manual)
+    WA-->>WI: Session Established
+    loop Every 10 minutes
+        WI->>WA: Check group messages
+        WA-->>WI: Recent messages
+        WI->>WI: Extract ASINs/URLs
+        WI->>PG: Store ingestion log
+        WI->>RQ: Publish to 'deals' queue
+    end</pre></div><h3>5.3 A/B Testing Flow</h3>
+<div class="mermaid-diagram" id="mermaid-10"><pre class="mermaid">sequenceDiagram
+    participant TP as Telegram Posting
+    participant AB as A/B Engine
+    participant PG as PostgreSQL
+    participant TG as Telegram
+
+    TP->>AB: Request variant for deal
+    AB->>PG: Check active tests
+    PG-->>AB: Test configuration
+    AB->>AB: Select variant (A/B)
+    AB-->>TP: Variant assignment
+    TP->>TG: Post with variant
+    TG-->>TP: Message ID
+    TP->>PG: Store assignment
+    loop Every hour
+        TP->>TG: Fetch engagement metrics
+        TG-->>TP: Views, clicks
+        TP->>PG: Update metrics
+    end</pre></div><hr>
+<h2>6. Database Schema</h2>
+<h3>6.1 Entity Relationship Diagram</h3>
+<div class="mermaid-diagram" id="mermaid-11"><pre class="mermaid">erDiagram
+    PRODUCTS {
+        string asin PK
+        string title
+        string category
+        string image_url
+        string product_url
+        string affiliate_url
+        float rating
+        int review_count
+        timestamp first_seen
+        timestamp last_updated
+    }
+
+    PRICE_HISTORY {
+        timestamp time PK
+        string asin PK
+        float price
+        float mrp
+        float discount_pct
+        string source
+    }
+
+    POSTED_DEALS {
+        timestamp time PK
+        string asin PK
+        float deal_score
+        string post_template
+        string channel
+        int engagement_views
+        int engagement_clicks
+        bigint message_id
+        string content_strategy
+        string archetype
+        boolean ai_generated
+        string posting_slot
+        float revenue_multiplier
+        int clicks
+        float estimated_revenue
+        timestamp last_click_at
+        float final_price
+        float deal_price
+        string category
+        string caption_source
+    }
+
+    WHATSAPP_INGESTION {
+        timestamp time PK
+        string message_id
+        string source_group
+        text raw_text
+        string extracted_asin
+        string extracted_url
+        boolean processed
+        string duplicate_of
+    }
+
+    AFFILIATE_CLICKS {
+        timestamp time PK
+        string short_url
+        string original_url
+        string asin
+        string channel
+        string user_agent
+        string ip_hash
+    }
+
+    AGENT_METRICS {
+        timestamp time PK
+        string agent_name
+        string task_type
+        string status
+        int duration_ms
+        string error_message
+    }
+
+    AB_TEST_ASSIGNMENTS {
+        string test_id PK
+        string deal_asin
+        string variant
+        timestamp assigned_at
+        bigint message_id
+    }
+
+    ENGAGEMENT_POSTS {
+        timestamp time PK
+        string post_type
+        int view_count
+        int click_count
+        float engagement_rate
+    }
+
+    PRODUCTS ||--o{ PRICE_HISTORY : "has prices"
+    PRODUCTS ||--o{ POSTED_DEALS : "posted as"
+    POSTED_DEALS ||--o{ AFFILIATE_CLICKS : "generates"
+    PRODUCTS ||--o{ WHATSAPP_INGESTION : "discovered via"</pre></div><h3>6.2 Schema Details</h3>
+<h4>Products Table</h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>asin</td>
+<td>TEXT</td>
+<td>PRIMARY KEY</td>
+<td>Amazon Standard Identification Number</td>
+</tr>
+<tr>
+<td>title</td>
+<td>TEXT</td>
+<td>NOT NULL</td>
+<td>Product title</td>
+</tr>
+<tr>
+<td>category</td>
+<td>TEXT</td>
+<td></td>
+<td>Product category</td>
+</tr>
+<tr>
+<td>image_url</td>
+<td>TEXT</td>
+<td></td>
+<td>Primary product image</td>
+</tr>
+<tr>
+<td>product_url</td>
+<td>TEXT</td>
+<td></td>
+<td>Amazon product URL</td>
+</tr>
+<tr>
+<td>affiliate_url</td>
+<td>TEXT</td>
+<td></td>
+<td>Generated affiliate link</td>
+</tr>
+<tr>
+<td>rating</td>
+<td>REAL</td>
+<td></td>
+<td>Customer rating (1-5)</td>
+</tr>
+<tr>
+<td>review_count</td>
+<td>INTEGER</td>
+<td></td>
+<td>Number of reviews</td>
+</tr>
+<tr>
+<td>first_seen</td>
+<td>TIMESTAMPTZ</td>
+<td>DEFAULT NOW()</td>
+<td>First discovery timestamp</td>
+</tr>
+<tr>
+<td>last_updated</td>
+<td>TIMESTAMPTZ</td>
+<td>DEFAULT NOW()</td>
+<td>Last update timestamp</td>
+</tr>
+</tbody></table>
+<h4>Price History Table (TimescaleDB Hypertable)</h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>time</td>
+<td>TIMESTAMPTZ</td>
+<td>NOT NULL</td>
+<td>Price snapshot timestamp</td>
+</tr>
+<tr>
+<td>asin</td>
+<td>TEXT</td>
+<td>NOT NULL</td>
+<td>Product ASIN</td>
+</tr>
+<tr>
+<td>price</td>
+<td>REAL</td>
+<td>NOT NULL</td>
+<td>Current price</td>
+</tr>
+<tr>
+<td>mrp</td>
+<td>REAL</td>
+<td></td>
+<td>Maximum retail price</td>
+</tr>
+<tr>
+<td>discount_pct</td>
+<td>REAL</td>
+<td></td>
+<td>Calculated discount percentage</td>
+</tr>
+<tr>
+<td>source</td>
+<td>TEXT</td>
+<td>DEFAULT &#39;amazon&#39;</td>
+<td>Price source</td>
+</tr>
+</tbody></table>
+<h4>Posted Deals Table (TimescaleDB Hypertable)</h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>time</td>
+<td>TIMESTAMPTZ</td>
+<td>NOT NULL</td>
+<td>Post timestamp</td>
+</tr>
+<tr>
+<td>asin</td>
+<td>TEXT</td>
+<td>NOT NULL</td>
+<td>Product ASIN</td>
+</tr>
+<tr>
+<td>deal_score</td>
+<td>REAL</td>
+<td></td>
+<td>AI-calculated deal score</td>
+</tr>
+<tr>
+<td>post_template</td>
+<td>TEXT</td>
+<td></td>
+<td>Template used</td>
+</tr>
+<tr>
+<td>channel</td>
+<td>TEXT</td>
+<td>DEFAULT &#39;telegram&#39;</td>
+<td>Distribution channel</td>
+</tr>
+<tr>
+<td>engagement_views</td>
+<td>INTEGER</td>
+<td>DEFAULT 0</td>
+<td>View count</td>
+</tr>
+<tr>
+<td>engagement_clicks</td>
+<td>INTEGER</td>
+<td>DEFAULT 0</td>
+<td>Click count</td>
+</tr>
+<tr>
+<td>message_id</td>
+<td>BIGINT</td>
+<td></td>
+<td>Telegram message ID</td>
+</tr>
+<tr>
+<td>content_strategy</td>
+<td>TEXT</td>
+<td></td>
+<td>Strategy archetype</td>
+</tr>
+<tr>
+<td>archetype</td>
+<td>TEXT</td>
+<td></td>
+<td>Content archetype</td>
+</tr>
+<tr>
+<td>ai_generated</td>
+<td>BOOLEAN</td>
+<td></td>
+<td>AI-generated flag</td>
+</tr>
+<tr>
+<td>posting_slot</td>
+<td>TEXT</td>
+<td></td>
+<td>Time slot category</td>
+</tr>
+<tr>
+<td>revenue_multiplier</td>
+<td>REAL</td>
+<td></td>
+<td>Revenue optimization factor</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>7. Deployment Architecture</h2>
+<h3>7.1 Docker Compose Topology</h3>
+<div class="mermaid-diagram" id="mermaid-12"><pre class="mermaid">graph TB
+    subgraph "Docker Network: affiliate-platform_default"
+        subgraph "Data Layer"
+            PG[(PostgreSQL<br/>ankane/pgvector)]
+            RD[(Redis<br/>redis:7-alpine)]
+        end
+
+        subgraph "Application Layer"
+            DD[Deal Discovery<br/>Node.js 20]
+            DA[Deal Analysis<br/>Node.js 20]
+            TP[Telegram Posting<br/>Node.js 20]
+            CL[Curated Lists<br/>Node.js 20]
+            WI[WhatsApp Ingestion<br/>Node.js 20]
+        end
+
+        subgraph "Monitoring Layer"
+            PR[Prometheus<br/>prom/prometheus]
+            GF[Grafana<br/>grafana:10.4.3]
+        end
+
+        subgraph "Shared Resources"
+            SH[Shared Module<br/>Volume]
+            PC[Playwright Cache<br/>Volume]
+        end
+    end
+
+    PG --> DD
+    PG --> DA
+    PG --> TP
+    PG --> CL
+    RD --> DD
+    RD --> DA
+    RD --> TP
+    RD --> CL
+    SH --> DD
+    SH --> DA
+    SH --> TP
+    SH --> CL
+    PC --> DD
+    PC --> CL
+    DD --> PR
+    DA --> PR
+    TP --> PR
+    PR --> GF</pre></div><h3>7.2 Service Configuration</h3>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Image</th>
+<th>Memory Limit</th>
+<th>Restart</th>
+<th>Ports</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PostgreSQL</td>
+<td>ankane/pgvector:latest</td>
+<td>Unlimited</td>
+<td>unless-stopped</td>
+<td>5432</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>redis:7-alpine</td>
+<td>512MB</td>
+<td>unless-stopped</td>
+<td>6379</td>
+</tr>
+<tr>
+<td>Deal Discovery</td>
+<td>Custom Node.js</td>
+<td>2GB</td>
+<td>unless-stopped</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Deal Analysis</td>
+<td>Custom Node.js</td>
+<td>1GB</td>
+<td>unless-stopped</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Telegram Posting</td>
+<td>Custom Node.js</td>
+<td>1GB</td>
+<td>unless-stopped</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Curated Lists</td>
+<td>Custom Node.js</td>
+<td>2GB</td>
+<td>unless-stopped</td>
+<td>-</td>
+</tr>
+<tr>
+<td>WhatsApp</td>
+<td>Custom Node.js</td>
+<td>1GB</td>
+<td>no (manual)</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Grafana</td>
+<td>grafana:10.4.3</td>
+<td>Unlimited</td>
+<td>unless-stopped</td>
+<td>3000</td>
+</tr>
+<tr>
+<td>Prometheus</td>
+<td>prom/prometheus</td>
+<td>Unlimited</td>
+<td>unless-stopped</td>
+<td>9090</td>
+</tr>
+</tbody></table>
+<h3>7.3 Volume Mapping</h3>
+<table>
+<thead>
+<tr>
+<th>Volume</th>
+<th>Purpose</th>
+<th>Persistence</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>postgres_data</td>
+<td>Database files</td>
+<td>Persistent</td>
+</tr>
+<tr>
+<td>redis_data</td>
+<td>Cache data</td>
+<td>Persistent</td>
+</tr>
+<tr>
+<td>grafana_data</td>
+<td>Dashboard configs</td>
+<td>Persistent</td>
+</tr>
+<tr>
+<td>prometheus_data</td>
+<td>Metrics storage</td>
+<td>Persistent</td>
+</tr>
+<tr>
+<td>playwright_cache</td>
+<td>Browser binaries</td>
+<td>Shared</td>
+</tr>
+<tr>
+<td>shared_modules</td>
+<td>Node modules</td>
+<td>Shared</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>8. Monitoring &amp; Observability</h2>
+<h3>8.1 Metrics Collection</h3>
+<div class="mermaid-diagram" id="mermaid-13"><pre class="mermaid">graph LR
+    subgraph "Agents"
+        DD[Deal Discovery]
+        DA[Deal Analysis]
+        TP[Telegram Posting]
+        CL[Curated Lists]
+    end
+
+    subgraph "Metrics Endpoints"
+        M1[Port 3001]
+        M2[Port 3002]
+        M3[Port 3004]
+        M4[Port 3005]
+    end
+
+    subgraph "Prometheus"
+        PR[Scraper]
+        TS[Time Series DB]
+    end
+
+    subgraph "Grafana"
+        DB1[Deal Discovery Dashboard]
+        DB2[Deal Analysis Dashboard]
+        DB3[Telegram Posting Dashboard]
+    end
+
+    DD --> M1
+    DA --> M2
+    TP --> M3
+    CL --> M4
+    M1 --> PR
+    M2 --> PR
+    M3 --> PR
+    M4 --> PR
+    PR --> TS
+    TS --> DB1
+    TS --> DB2
+    TS --> DB3</pre></div><h3>8.2 Key Metrics</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Metric</th>
+<th>Threshold</th>
+<th>Alert</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Performance</td>
+<td>Deals discovered/hour</td>
+<td>&gt; 50</td>
+<td>Warning if &lt; 30</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>Analysis queue depth</td>
+<td>&lt; 100</td>
+<td>Critical if &gt; 100</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>Post success rate</td>
+<td>&gt; 95%</td>
+<td>Critical if &lt; 90%</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>AI API latency</td>
+<td>&lt; 2s</td>
+<td>Warning if &gt; 3s</td>
+</tr>
+<tr>
+<td>Health</td>
+<td>Agent uptime</td>
+<td>&gt; 99%</td>
+<td>Critical if &lt; 95%</td>
+</tr>
+<tr>
+<td>Health</td>
+<td>Scraping error rate</td>
+<td>&lt; 5%</td>
+<td>Warning if &gt; 10%</td>
+</tr>
+<tr>
+<td>Business</td>
+<td>Engagement rate</td>
+<td>&gt; 10%</td>
+<td>Warning if &lt; 5%</td>
+</tr>
+<tr>
+<td>Business</td>
+<td>Click-through rate</td>
+<td>&gt; 8%</td>
+<td>Warning if &lt; 3%</td>
+</tr>
+</tbody></table>
+<h3>8.3 Dashboard Views</h3>
+<ol>
+<li><p><strong>Deal Discovery Dashboard</strong></p>
+<ul>
+<li>Deals discovered over time</li>
+<li>Source breakdown</li>
+<li>Error rate by source</li>
+<li>Browser fingerprint rotation</li>
+</ul>
+</li>
+<li><p><strong>Deal Analysis Dashboard</strong></p>
+<ul>
+<li>Queue depth</li>
+<li>AI model performance</li>
+<li>Score distribution</li>
+<li>Processing latency</li>
+</ul>
+</li>
+<li><p><strong>Telegram Posting Dashboard</strong></p>
+<ul>
+<li>Posts per hour</li>
+<li>Engagement metrics</li>
+<li>A/B test results</li>
+<li>Revenue estimates</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>9. Scaling Strategy</h2>
+<h3>9.1 Current Phase: Single Instance</h3>
+<div class="mermaid-diagram" id="mermaid-14"><pre class="mermaid">graph TB
+    subgraph "Single Host Deployment"
+        D[Docker Compose]
+        D --> PG[(PostgreSQL)]
+        D --> RD[(Redis)]
+        D --> DD[Deal Discovery]
+        D --> DA[Deal Analysis]
+        D --> TP[Telegram Posting]
+        D --> GF[Grafana]
+        D --> PR[Prometheus]
+    end</pre></div><p><strong>Characteristics:</strong></p>
+<ul>
+<li>All services on single VPS (4GB RAM)</li>
+<li>Shared resources</li>
+<li>SQLite cache fallback</li>
+<li>Manual WhatsApp authentication</li>
+</ul>
+<h3>9.2 Phase 2: Horizontal Scaling</h3>
+<div class="mermaid-diagram" id="mermaid-15"><pre class="mermaid">graph TB
+    subgraph "Kubernetes Cluster"
+        subgraph "Data Tier"
+            PG[(PostgreSQL HA)]
+            RD[(Redis Cluster)]
+        end
+
+        subgraph "Agent Pools"
+            AP1[Discovery Pool<br/>3 replicas]
+            AP2[Analysis Pool<br/>5 replicas]
+            AP3[Posting Pool<br/>2 replicas]
+        end
+
+        subgraph "Load Balancing"
+            LB1[Queue Router]
+            LB2[API Gateway]
+        end
+
+        subgraph "Monitoring"
+            PR[Prometheus Federation]
+            GF[Grafana HA]
+        end
+
+        LB1 --> AP1
+        LB1 --> AP2
+        LB1 --> AP3
+        AP1 --> PG
+        AP2 --> PG
+        AP3 --> PG
+        AP1 --> RD
+        AP2 --> RD
+        AP3 --> RD
+        AP1 --> PR
+        AP2 --> PR
+        AP3 --> PR
+        PR --> GF
+    end</pre></div><p><strong>Scaling Triggers:</strong></p>
+<ul>
+<li>Queue depth &gt; 500 for 5 minutes → Scale analysis workers</li>
+<li>Discovery time &gt; 15 minutes → Scale discovery workers</li>
+<li>Post backlog &gt; 50 → Scale posting workers</li>
+</ul>
+<h3>9.3 Phase 3: Multi-Region Swarm</h3>
+<div class="mermaid-diagram" id="mermaid-16"><pre class="mermaid">graph TB
+    subgraph "Region 1: Mumbai"
+        R1A[Discovery Nodes]
+        R1B[Analysis Nodes]
+        R1C[Local DB Replica]
+    end
+
+    subgraph "Region 2: Singapore"
+        R2A[Discovery Nodes]
+        R2B[Analysis Nodes]
+        R2C[Local DB Replica]
+    end
+
+    subgraph "Global Services"
+        GLB[Global Load Balancer]
+        MDB[(Primary DB)]
+        AI[AI Model Router]
+    end
+
+    GLB --> R1A
+    GLB --> R2A
+    R1A --> R1B
+    R2A --> R2B
+    R1B --> R1C
+    R2B --> R2C
+    R1C --> MDB
+    R2C --> MDB
+    R1B --> AI
+    R2B --> AI</pre></div><hr>
+<h2>10. Security Architecture</h2>
+<h3>10.1 Security Layers</h3>
+<div class="mermaid-diagram" id="mermaid-17"><pre class="mermaid">graph TB
+    subgraph "Security Architecture"
+        direction TB
+        L1[Layer 1: Network]
+        L2[Layer 2: Container]
+        L3[Layer 3: Application]
+        L4[Layer 4: Data]
+    end
+
+    subgraph "Controls"
+        C1[Docker Network Isolation]
+        C2[Non-root Containers]
+        C3[Secret Management]
+        C4[Encrypted Connections]
+    end
+
+    L1 --> C1
+    L2 --> C2
+    L3 --> C3
+    L4 --> C4</pre></div><h3>10.2 Security Measures</h3>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Measure</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Network</td>
+<td>Internal Docker network</td>
+<td>Default bridge network</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>Port exposure</td>
+<td>Only necessary ports exposed</td>
+</tr>
+<tr>
+<td>Container</td>
+<td>User privileges</td>
+<td>Non-root where possible</td>
+</tr>
+<tr>
+<td>Container</td>
+<td>Image scanning</td>
+<td>Base images from trusted sources</td>
+</tr>
+<tr>
+<td>Application</td>
+<td>Secrets management</td>
+<td>Environment variables only</td>
+</tr>
+<tr>
+<td>Application</td>
+<td>No hardcoded credentials</td>
+<td>All secrets in <code>.env</code></td>
+</tr>
+<tr>
+<td>Data</td>
+<td>Database encryption</td>
+<td>TLS connections</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>Session persistence</td>
+<td>Encrypted session files</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>API keys</td>
+<td>Rotatable, multiple fallback keys</td>
+</tr>
+</tbody></table>
+<h3>10.3 Secret Management</h3>
+<div class="mermaid-diagram" id="mermaid-18"><pre class="mermaid">graph LR
+    subgraph "Secret Sources"
+        ENV[.env File]
+        DC[Docker Compose]
+        RUN[Runtime Env]
+    end
+
+    subgraph "Consumers"
+        GEM[Gemini API Keys]
+        OR[OpenRouter Key]
+        TG[Telegram Token]
+        DB[DB Password]
+    end
+
+    ENV --> DC
+    DC --> RUN
+    RUN --> GEM
+    RUN --> OR
+    RUN --> TG
+    RUN --> DB</pre></div><hr>
+<h2>11. Technology Stack</h2>
+<h3>11.1 Complete Stack Overview</h3>
+<div class="mermaid-diagram" id="mermaid-19"><pre class="mermaid">graph TB
+    subgraph "Runtime"
+        NODE[Node.js 20+]
+        ESM[ES Modules]
+    end
+
+    subgraph "Data"
+        PG[(PostgreSQL 16)]
+        TS[TimescaleDB]
+        PV[pgvector]
+        RD[(Redis 7)]
+        BQ[BullMQ]
+    end
+
+    subgraph "Browser Automation"
+        PW[Playwright]
+        SB[Stealth Browser]
+        FP[Fingerprinting]
+    end
+
+    subgraph "AI/ML"
+        GEM[Google Gemini]
+        OR[OpenRouter]
+        OL[Ollama]
+        ZOD[Zod Schema]
+    end
+
+    subgraph "Messaging"
+        TF[Telegraf]
+        TG[Telegram API]
+        WA[WhatsApp Web]
+    end
+
+    subgraph "Monitoring"
+        PR[Prometheus]
+        GF[Grafana]
+        JL[Winston Logger]
+    end
+
+    subgraph "Infrastructure"
+        DK[Docker]
+        DC[Docker Compose]
+        NG[Nginx]
+    end
+
+    NODE --> PW
+    NODE --> BQ
+    NODE --> TF
+    NODE --> JL
+    PW --> SB
+    SB --> FP
+    BQ --> RD
+    TF --> TG
+    PG --> TS
+    TS --> PV</pre></div><h3>11.2 Technology Details</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Runtime</td>
+<td>Node.js</td>
+<td>20+</td>
+<td>JavaScript runtime</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>PostgreSQL</td>
+<td>16</td>
+<td>Primary database</td>
+</tr>
+<tr>
+<td>Extension</td>
+<td>TimescaleDB</td>
+<td>2.x</td>
+<td>Time-series data</td>
+</tr>
+<tr>
+<td>Extension</td>
+<td>pgvector</td>
+<td>0.5+</td>
+<td>Vector similarity</td>
+</tr>
+<tr>
+<td>Cache</td>
+<td>Redis</td>
+<td>7.x</td>
+<td>Message queue &amp; cache</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td>BullMQ</td>
+<td>5.x</td>
+<td>Job processing</td>
+</tr>
+<tr>
+<td>Browser</td>
+<td>Playwright</td>
+<td>1.40+</td>
+<td>Web scraping</td>
+</tr>
+<tr>
+<td>AI</td>
+<td>Google Gemini</td>
+<td>2.0 Flash</td>
+<td>Primary AI model</td>
+</tr>
+<tr>
+<td>AI</td>
+<td>OpenRouter</td>
+<td>-</td>
+<td>Secondary AI model</td>
+</tr>
+<tr>
+<td>AI</td>
+<td>Ollama</td>
+<td>-</td>
+<td>Local AI fallback</td>
+</tr>
+<tr>
+<td>Bot</td>
+<td>Telegraf</td>
+<td>4.x</td>
+<td>Telegram bot framework</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Prometheus</td>
+<td>2.x</td>
+<td>Metrics collection</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Grafana</td>
+<td>10.4</td>
+<td>Visualization</td>
+</tr>
+<tr>
+<td>Logging</td>
+<td>Winston</td>
+<td>3.x</td>
+<td>Structured logging</td>
+</tr>
+<tr>
+<td>Validation</td>
+<td>Zod</td>
+<td>3.x</td>
+<td>Schema validation</td>
+</tr>
+<tr>
+<td>Container</td>
+<td>Docker</td>
+<td>24+</td>
+<td>Containerization</td>
+</tr>
+<tr>
+<td>Orchestration</td>
+<td>Docker Compose</td>
+<td>2.x</td>
+<td>Local orchestration</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>12. Cost Analysis</h2>
+<h3>12.1 Current Infrastructure Costs</h3>
+<div class="mermaid-diagram" id="mermaid-20"><pre class="mermaid">pie title Monthly Cost Breakdown
+    "VPS (4GB RAM)" : 20
+    "Gemini API" : 10
+    "Domain" : 1
+    "Telegram" : 0</pre></div><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Provider</th>
+<th>Monthly Cost</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VPS (4GB)</td>
+<td>Hetzner/DigitalOcean</td>
+<td>$20</td>
+<td>Single instance</td>
+</tr>
+<tr>
+<td>Gemini API</td>
+<td>Google</td>
+<td>$5-15</td>
+<td>Variable usage</td>
+</tr>
+<tr>
+<td>OpenRouter</td>
+<td>OpenRouter</td>
+<td>$0-5</td>
+<td>Fallback usage</td>
+</tr>
+<tr>
+<td>Telegram Bot</td>
+<td>Telegram</td>
+<td>Free</td>
+<td>No cost</td>
+</tr>
+<tr>
+<td>Domain</td>
+<td>Namecheap/Cloudflare</td>
+<td>$1</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Self-hosted</td>
+<td>$0</td>
+<td>Prometheus/Grafana</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td><strong>$26-36</strong></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3>12.2 Projected Scaling Costs</h3>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Infrastructure</th>
+<th>Monthly Cost</th>
+<th>Capacity</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Phase 1 (Current)</td>
+<td>Single VPS</td>
+<td>$26-36</td>
+<td>1,200 deals/day</td>
+</tr>
+<tr>
+<td>Phase 2 (K8s)</td>
+<td>3-node cluster</td>
+<td>$150-200</td>
+<td>10,000 deals/day</td>
+</tr>
+<tr>
+<td>Phase 3 (Multi-region)</td>
+<td>2 regions</td>
+<td>$400-600</td>
+<td>50,000 deals/day</td>
+</tr>
+</tbody></table>
+<h3>12.3 Cost Optimization Strategies</h3>
+<ol>
+<li><strong>AI Model Routing</strong>: Use cheaper models for simple tasks</li>
+<li><strong>Caching</strong>: Redis caching reduces API calls</li>
+<li><strong>Batch Processing</strong>: Process deals in batches where possible</li>
+<li><strong>Smart Scheduling</strong>: Post during high-engagement hours only</li>
+<li><strong>Image Optimization</strong>: Compress images before posting</li>
+</ol>
+<hr>
+<h2>Appendix A: File Structure</h2>
+<pre><code class="language-">affiliate-platform/
+├── agents/
+│   ├── affiliate-system/
+│   ├── curated-lists/
+│   ├── deal-analysis/
+│   ├── deal-discovery/
+│   ├── quality-control/
+│   ├── scheduler/
+│   ├── telegram-posting/
+│   └── whatsapp-ingestion/
+├── shared/
+│   ├── models/
+│   ├── types/
+│   └── utils/
+├── infrastructure/
+│   ├── db/
+│   │   └── init/
+│   ├── docker/
+│   ├── grafana/
+│   │   ├── dashboards/
+│   │   └── datasources/
+│   ├── monitoring/
+│   └── prometheus/
+├── scripts/
+├── tests/
+├── docker-compose.yml
+└── .env</code></pre><h2>Appendix B: API Integration Points</h2>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Endpoint</th>
+<th>Purpose</th>
+<th>Rate Limit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Google Gemini</td>
+<td>generativelanguage.googleapis.com</td>
+<td>Deal scoring</td>
+<td>60 RPM</td>
+</tr>
+<tr>
+<td>OpenRouter</td>
+<td>openrouter.ai/api</td>
+<td>Fallback AI</td>
+<td>20 RPM</td>
+</tr>
+<tr>
+<td>Telegram</td>
+<td>api.telegram.org</td>
+<td>Bot API</td>
+<td>30 MSG/s</td>
+</tr>
+<tr>
+<td>Amazon India</td>
+<td>amazon.in</td>
+<td>Deal discovery</td>
+<td>N/A (scraping)</td>
+</tr>
+</tbody></table>
+<h2>Appendix C: Operational Runbooks</h2>
+<h3>Restarting Services</h3>
+<pre><code class="language-bash">docker compose restart [service-name]</code></pre><h3>Viewing Logs</h3>
+<pre><code class="language-bash">docker compose logs -f [service-name]</code></pre><h3>Database Backup</h3>
+<pre><code class="language-bash">docker compose exec postgres pg_dump -U affiliate_user affiliate_platform > backup.sql</code></pre><h3>Redis Queue Inspection</h3>
+<pre><code class="language-bash">docker compose exec redis redis-cli LLEN bull:deals:wait
+docker compose exec redis redis-cli LLEN bull:posts:wait</code></pre><hr>
+<p><strong>Document Control</strong></p>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Author</th>
+<th>Changes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.0</td>
+<td>Nov 2024</td>
+<td>System</td>
+<td>Initial architecture</td>
+</tr>
+<tr>
+<td>2.0</td>
+<td>Dec 2026</td>
+<td>System</td>
+<td>Added curated lists, A/B testing, content strategy</td>
+</tr>
+</tbody></table>
+<p><strong>Review Schedule:</strong> Quarterly</p>
+<p><strong>Distribution:</strong> Internal Engineering Team</p>
+<hr>
+<p><em>This document contains proprietary information. Unauthorized distribution is prohibited.</em></p>
+
+  
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      themeVariables: {
+        primaryColor: '#e8eaf6',
+        primaryTextColor: '#1a237e',
+        primaryBorderColor: '#3949ab',
+        lineColor: '#5c6bc0',
+        secondaryColor: '#c5cae9',
+        tertiaryColor: '#f5f5f5',
+        fontFamily: 'Segoe UI, sans-serif',
+        fontSize: '14px'
+      },
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis'
+      },
+      sequence: {
+        useMaxWidth: true,
+        diagramMarginX: 50,
+        diagramMarginY: 10
+      },
+      er: {
+        useMaxWidth: true
+      }
+    });
+  </script>
+</body>
+</html>

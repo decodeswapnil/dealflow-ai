@@ -1,0 +1,20 @@
+graph TB
+    subgraph "Security Architecture"
+        direction TB
+        L1[Layer 1: Network]
+        L2[Layer 2: Container]
+        L3[Layer 3: Application]
+        L4[Layer 4: Data]
+    end
+
+    subgraph "Controls"
+        C1[Docker Network Isolation]
+        C2[Non-root Containers]
+        C3[Secret Management]
+        C4[Encrypted Connections]
+    end
+
+    L1 --> C1
+    L2 --> C2
+    L3 --> C3
+    L4 --> C4

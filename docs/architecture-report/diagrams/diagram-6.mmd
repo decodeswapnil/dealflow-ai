@@ -1,0 +1,31 @@
+graph LR
+    subgraph "Content Archetypes"
+        A1[Urgency Driver]
+        A2[Value Proposition]
+        A3[Social Proof]
+        A4[Scarcity Alert]
+        A5[Curiosity Gap]
+    end
+
+    subgraph "Optimization"
+        AB[A/B Testing]
+        CC[Content Calendar]
+        TS[Time Slotting]
+    end
+
+    subgraph "Output"
+        CAP[Caption]
+        KB[Keyboard]
+        IMG[Image]
+    end
+
+    A1 --> AB
+    A2 --> AB
+    A3 --> AB
+    A4 --> AB
+    A5 --> AB
+    AB --> CC
+    CC --> TS
+    TS --> CAP
+    TS --> KB
+    TS --> IMG

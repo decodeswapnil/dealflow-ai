@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant WA as WhatsApp Web
+    participant WI as WhatsApp Agent
+    participant RQ as Redis Queue
+    participant DA as Deal Analysis
+    participant PG as PostgreSQL
+
+    WI->>WA: Scan QR Code (Manual)
+    WA-->>WI: Session Established
+    loop Every 10 minutes
+        WI->>WA: Check group messages
+        WA-->>WI: Recent messages
+        WI->>WI: Extract ASINs/URLs
+        WI->>PG: Store ingestion log
+        WI->>RQ: Publish to 'deals' queue
+    end
